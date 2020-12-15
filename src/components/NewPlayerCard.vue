@@ -1,8 +1,9 @@
 <template>
-    <div class="p-7 rounded-lg w-55 float-right">
+    <div class="p-7 rounded-lg w-1/3 mx-auto my-auto border-2 shadow-lg">
       <v-input>
-        <v-text-field class="w-full" v-model="name" label="Name"></v-text-field>
+        <v-text-field id="nameBox" class="w-full" v-model="name" label="Name" v-on:input="$emit('update', $event)"></v-text-field>
       </v-input>
+      <v-btn class="mx-auto float-right" v-on:click="$emit('gameStart')">Submit</v-btn>
     </div>
 </template>
 
@@ -11,8 +12,13 @@
 
 export default {
   name: 'NewPlayerCard',
+  model: {
+    prop: 'name',
+    event: 'input'
+  },
   props: {
     name: String,
+    gameStarted: String,
   },
   computed: {
     playerName: {
@@ -25,26 +31,27 @@ export default {
   }
   },
   mounted() {
-    if (localStorage.name) {
-      this.name = localStorage.name;
-    }
+    // if (localStorage.name) {
+    //   this.name = localStorage.name;
+    // }
+    //
+    // if (localStorage.name) {
+    //   this.name = localStorage.name;
+    // }
 
-    var Ably = require('ably');
-    if (localStorage.name) {
-      this.name = localStorage.name;
-    }
-
-    var ably = new Ably.Realtime('Eu8tBQ.6-xYZA:ukBv9IIiC4Q9341U');
-    var channel = ably.channels.get('test');
-
-    // Publish a message to the test channel
-    channel.publish('greeting', 'hello');
-  },
-  watch: {
-    name(newName) {
-      localStorage.name = newName;
-    }
-  }
+    // var Ably = require('ably');
+    // var ably = new Ably.Realtime('Eu8tBQ.6-xYZA:ukBv9IIiC4Q9341U');
+    // var channel = ably.channels.get('test');
+    //
+    // // Publish a message to the test channel
+    // channel.publish('greeting', 'hello');
+    // },
+   //  watch: {
+   //    name(newName) {
+   //      localStorage.name = newName;
+   //    }
+   // },
+},
 }
 </script>
 

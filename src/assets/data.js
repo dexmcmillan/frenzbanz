@@ -1,37 +1,38 @@
+const words = [
+  'Hello', 'Bird', 'Plane', 'Whale', "Book", "The Big Bang", "Two and a Half Men", "Cold Case"
+]
+
+export const sortedWords = words.sort(function() {
+  return 0.5 - Math.random();
+})
+
 export const players = [
   {
     id: 1,
-    name: 'dex',
+    name: 'Dexter',
+    get assignedWord() {
+      return sortedWords[this.id]
+    },
   },
   {
     id: 2,
-    name: 'john',
-  }
-]
-
-export const cards = [
-  {
-    id: 1,
-    submitted: 'Dexter',
-    assigned: 'John',
-    word: "Hello"
-  },
-  {
-    id: 2,
-    submitted: 'Diane',
-    assigned: 'Dexter',
-    word: "Giraffe"
+    name: 'Joseph',
+    get assignedWord() {
+      return sortedWords[this.id]
+    },
   },
   {
     id: 3,
-    submitted: 'Bob',
-    assigned: 'Joe',
-    word: "Bottle"
+    name: 'Jill',
+    get assignedWord() {
+      return sortedWords[this.id]
+    },
   },
   {
     id: 4,
-    submitted: 'Joe',
-    assigned: 'Diane',
-    word: "Bird"
-  },
+    name: 'Jean',
+    get assignedWord() {
+      return sortedWords[this.id]
+    },
+  }
 ]
