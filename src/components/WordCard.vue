@@ -1,5 +1,5 @@
 <template>
-    <div class="border-2 col-span-2 p-5 rounded-lg h-40 text-left shadow-lg">
+    <div class="border-2 col-span-3 p-5 rounded-lg h-40 text-left shadow-lg">
       <p class="">{{ playerName }}</p>
       <h1 class="text-center text-4xl">{{ word }}</h1>
     </div>

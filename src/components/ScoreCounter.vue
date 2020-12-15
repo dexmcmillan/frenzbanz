@@ -1,24 +1,13 @@
 <template>
-    <div class="col-span-1 p-5 rounded-lg w-screen h-40 absolute bottom-0">
-      <div class="w-48 h-16 mx-auto">
-        <svg id="counters">
-          <circle id="btn1" cx="40" cy="32" r="20" fill="#c9c9c9" onclick="document.getElementById('btn1').setAttribute('fill','#4287f5')" />
-          <circle id="btn2" cx="90" cy="32" r="20" fill="#c9c9c9" onclick="document.getElementById('btn2').setAttribute('fill','#4287f5')" />
-          <circle id="btn3" cx="140" cy="32" r="20" fill="#c9c9c9" onclick="document.getElementById('btn3').setAttribute('fill','#4287f5')" />
-        </svg>
-      </div>
-      <div class="mx-auto w-48">
-        <v-btn class="mx-auto w-full" v-on:click="reset">Reset</v-btn>
-      </div>
-    </div>
+  <v-btn class="text-3xl border-2 w-20 h-10 self-end mx-auto" style="border-radius: 5px">+</v-btn>
 </template>
 
 <script>
 
 export default {
-  name: 'NewPlayerCard',
+  name: 'ScoreCounter',
   props: {
-    score: String,
+    you: Object,
   },
   methods:  {
     reset: function () {

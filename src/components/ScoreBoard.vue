@@ -19,7 +19,6 @@ export default {
   name: 'ScoreBoard',
   props: {
     players: Array,
-    score: Number,
   },
 }
 </script>

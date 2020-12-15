@@ -23,7 +23,7 @@ export const players = [
       return sortedWords[this.id]
     },
     you: "FALSE",
-    score: 0,
+    score: 2,
   },
   {
     id: 3,
