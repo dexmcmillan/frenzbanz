@@ -6,12 +6,12 @@
     <div v-if="gameStarted === 'TRUE'" class='grid grid-cols-6 w-screen h-screen p-5'>
       <ScoreBoard v-bind:players="players"></ScoreBoard>
       <div class="flex grid grid-cols-6 col-span-6 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
-        <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
+        <WordCard v-for="player in players" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
       </div>
       <div class="absolute right-0 bottom-0 m-10">
         <v-btn class="text-3xl border-2 mx-2" style="border-radius: 5px" v-on:click="guessCard">+</v-btn>
         <v-btn class="mx-2" v-on:click='you.score = 0'>Reset Score</v-btn>
-        <v-btn class="mx-2" v-on:click='gameStarted = "FALSE"'>End Game</v-btn>
+        <v-btn class="mx-2" v-on:click='endGame'>End Game</v-btn>
       </div>
     </div>
     <div v-else class="flex h-screen">
@@ -24,8 +24,17 @@
 import NewPlayerCard from './components/NewPlayerCard';
 import WordCard from './components/WordCard';
 import ScoreBoard from './components/ScoreBoard';
-import {players, sortedWords} from './assets/data.js';
+import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
+
+var Ably = require('ably');
+
+var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
+ably.connection.on('connected', function() {
+  console.log("Connected!");
+});
+
+const channel = ably.channels.get('signIn');
 
 export default {
   name: 'App',
@@ -36,18 +45,9 @@ export default {
     ScoreBoard
   },
   computed: {
-    allWordsButYours()  {
-      const playersToShow = []
-      players.forEach((player) => {
-        if (player.you === "FALSE") {
-          playersToShow.push(player)
-        }
-      })
-      return playersToShow
-    },
     you()  {
       let you = {}
-      players.forEach((player) => {
+      this.players.forEach((player) => {
         if (player.you === "TRUE") {
           you = player;
         }
@@ -57,17 +57,32 @@ export default {
   },
   data() {
     return {
-      players: players,
+      players: [],
       words: sortedWords,
       gameStarted: 'FALSE',
     }
   },
   methods: {
+    allWordsButYours()  {
+      const playersToShow = []
+      this.players.forEach((player) => {
+        if (player.you === "FALSE") {
+          playersToShow.push(player)
+        }
+      })
+      return playersToShow
+    },
     startGame: function() {
 
-      const nextID = players.length;
+      channel.subscribe(function(message) {
+        allPlayers.push(message.data);
+        console.log('All players added to game.')
+      });
 
-      players.push({
+      const nextID = this.players.length;
+      const allPlayers = this.players
+
+      const newPlayerInfo = {
         id: nextID,
         name: document.getElementById('nameBox').value,
         get assignedWord() {
@@ -77,15 +92,24 @@ export default {
         },
         you: "TRUE",
         score: 0,
-      })
+      }
+
+      allPlayers.push(newPlayerInfo)
+
+      channel.publish('allPlayers', allPlayers, function(err){
+        console.log(err)
+      });
       this.gameStarted = "TRUE"
     },
     endGame: function() {
-      players = [];
+      this.players = [];
       this.gameStarted = "FALSE"
+      console.log('Game ended.')
     },
     guessCard: function() {
-      this.you.score++
+      if (this.you.score < 3) {
+        this.you.score++
+      }
     }
   }
 };
