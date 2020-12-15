@@ -1,8 +1,7 @@
 <template>
-    <div class="p-5 rounded-lg w-96 float-right">
+    <div class="p-7 rounded-lg w-55 float-right">
       <v-input>
         <v-text-field class="w-full" v-model="name" label="Name"></v-text-field>
-        <v-btn class="m-5">Submit</v-btn>
       </v-input>
     </div>
 </template>
