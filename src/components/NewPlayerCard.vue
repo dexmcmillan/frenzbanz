@@ -1,7 +1,7 @@
 <template>
     <div class="p-7 rounded-lg w-1/3 mx-auto my-auto border-2 shadow-lg">
       <v-input>
-        <v-text-field id="nameBox" class="w-full" v-model="name" label="Name" v-on:input="$emit('update', $event)"></v-text-field>
+        <v-text-field id="nameBox" class="w-full" label="Name"></v-text-field>
       </v-input>
       <v-btn class="mx-auto float-right" v-on:click="$emit('gameStart')">Submit</v-btn>
     </div>

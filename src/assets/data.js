@@ -13,6 +13,7 @@ export const players = [
     get assignedWord() {
       return sortedWords[this.id]
     },
+    you: "FALSE",
   },
   {
     id: 2,
@@ -20,6 +21,7 @@ export const players = [
     get assignedWord() {
       return sortedWords[this.id]
     },
+    you: "FALSE",
   },
   {
     id: 3,
@@ -27,6 +29,7 @@ export const players = [
     get assignedWord() {
       return sortedWords[this.id]
     },
+    you: "FALSE",
   },
   {
     id: 4,
@@ -34,5 +37,6 @@ export const players = [
     get assignedWord() {
       return sortedWords[this.id]
     },
+    you: "FALSE",
   }
 ]

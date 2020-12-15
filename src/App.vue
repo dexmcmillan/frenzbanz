@@ -1,19 +1,23 @@
 <template>
   <v-app>
-    <div v-if="gameStarted === 'TRUE'" class='grid grid-cols-4 w-screen h-screen p-5 border-2 justify-center'>
+    <div class="w-screen absolute top-0">
+      <h1 class="text-center text-5xl m-10 w/screen">Headbanz!</h1>
+    </div>
+    <div v-if="gameStarted === 'TRUE'" class='grid grid-cols-4 w-screen h-screen p-5 justify-center'>
       <div id="hud" class="absolute right-0 top-0">
         <div class="text-left w-1/3 border-2 p-5 ml-auto">
-          <h3 class="text-left">Players:</h3>
+          <!-- <h3 class="text-left">Players:</h3> -->
           <!-- <li class="ml-7" v-for="player in players" v-bind:key="player.id">{{ player.name }}</li> -->
         </div>
       </div>
       <div class="flex grid grid-cols-4 col-span-4 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
-        <WordCard v-for="player in players" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name"></WordCard>
+        <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name"></WordCard>
       </div>
       <ScoreCounter></ScoreCounter>
+      <v-btn class="absolute right-0 bottom-0 m-10" v-on:click='gameStarted = "FALSE"'>End Game</v-btn>
     </div>
-    <div v-else class="flex h-screen border-2">
-      <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" v-bind:name="players[0].name" v-on:update="players[0].name = $event" />
+    <div v-else class="flex h-screen">
+      <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" v-bind:name="players.name" />
     </div>
   </v-app>
 </template>
@@ -33,11 +37,11 @@ export default {
     WordCard,
     ScoreCounter
   },
-  filters: {
+  computed: {
     allWordsButYours()  {
       const playersToShow = []
       players.forEach((player) => {
-        if (player.name !== document.getElementById('nameBox').value) {
+        if (player.you === "FALSE") {
           playersToShow.push(player)
         }
       })
@@ -59,8 +63,13 @@ export default {
         get assignedWord() {
           return sortedWords[this.id]
         },
+        you: "TRUE"
       })
       this.gameStarted = "TRUE"
+    },
+    endGame: function() {
+      players = [];
+      this.gameStarted = "FALSE"
     },
   }
 };
