@@ -1,4 +1,6 @@
-# headbanz
+# Headbanz
+
+## A version of headbanz to facilitate playing over video chat.
 
 ## Project setup
 ```
