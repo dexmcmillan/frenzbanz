@@ -4,12 +4,7 @@
       <h1 class="text-center text-5xl m-10 w/screen">Headbanz!</h1>
     </div>
     <div v-if="gameStarted === 'TRUE'" class='grid grid-cols-4 w-screen h-screen p-5 justify-center'>
-      <div id="hud" class="absolute right-0 top-0">
-        <div class="text-left w-1/3 border-2 p-5 ml-auto">
-          <!-- <h3 class="text-left">Players:</h3> -->
-          <!-- <li class="ml-7" v-for="player in players" v-bind:key="player.id">{{ player.name }}</li> -->
-        </div>
-      </div>
+      <ScoreBoard v-bind:players="players"></ScoreBoard>
       <div class="flex grid grid-cols-4 col-span-4 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
         <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name"></WordCard>
       </div>
@@ -25,6 +20,7 @@
 <script>
 import NewPlayerCard from './components/NewPlayerCard';
 import WordCard from './components/WordCard';
+import ScoreBoard from './components/ScoreBoard';
 import ScoreCounter from './components/ScoreCounter';
 import {players, sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
@@ -35,7 +31,8 @@ export default {
   components: {
     NewPlayerCard,
     WordCard,
-    ScoreCounter
+    ScoreCounter,
+    ScoreBoard
   },
   computed: {
     allWordsButYours()  {
@@ -63,7 +60,8 @@ export default {
         get assignedWord() {
           return sortedWords[this.id]
         },
-        you: "TRUE"
+        you: "TRUE",
+        score: 0
       })
       this.gameStarted = "TRUE"
     },
