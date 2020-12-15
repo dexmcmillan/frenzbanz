@@ -6,10 +6,10 @@
     <div v-if="gameStarted === 'TRUE'" class='grid grid-cols-6 w-screen h-screen p-5'>
       <ScoreBoard v-bind:players="players"></ScoreBoard>
       <div class="flex grid grid-cols-6 col-span-6 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
-        <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name"></WordCard>
+        <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
       </div>
       <div class="absolute right-0 bottom-0 m-10">
-        <v-btn class="text-3xl border-2 mx-2" style="border-radius: 5px" v-on:click="you.score++">+</v-btn>
+        <v-btn class="text-3xl border-2 mx-2" style="border-radius: 5px" v-on:click="guessCard">+</v-btn>
         <v-btn class="mx-2" v-on:click='you.score = 0'>Reset Score</v-btn>
         <v-btn class="mx-2" v-on:click='gameStarted = "FALSE"'>End Game</v-btn>
       </div>
@@ -64,14 +64,19 @@ export default {
   },
   methods: {
     startGame: function() {
+
+      const nextID = players.length;
+
       players.push({
-        id: 1,
+        id: nextID,
         name: document.getElementById('nameBox').value,
         get assignedWord() {
-          return sortedWords[this.id]
+          const sliceStart = this.id * 3
+          const sliceEnd = sliceStart + 3
+          return sortedWords.slice(sliceStart,sliceEnd)
         },
         you: "TRUE",
-        score: 0
+        score: 0,
       })
       this.gameStarted = "TRUE"
     },
@@ -79,6 +84,9 @@ export default {
       players = [];
       this.gameStarted = "FALSE"
     },
+    guessCard: function() {
+      this.you.score++
+    }
   }
 };
 </script>
