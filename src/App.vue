@@ -34,13 +34,33 @@ const channel = ably.channels.get('signIn');
 
 let allPlayers = []
 
-ably.connection.on('connected', function() {
+ably.connection.once('connected', function() {
 
-  channel.history(function(err, resultPage) {
-    console.log(resultPage.items[0])
+  channel.presence.subscribe('enter', function(member) {
+
+    allPlayers.push(member.data)
   });
+  channel.presence.subscribe('leave', function() {});
+
+  channel.presence.get(function(err, members) {
+    console.log(members.length)
+    if(members.length >= 1) {
+      allPlayers.push(members[0].data)
+    }
+  });
+
+
+  // channel.history(function(err, resultPage) {
+  //   console.log(resultPage.items[0])
+  // });
   console.log("Connected!");
 });
+
+
+// channel.publish('allPlayers', allPlayers, function(err) {
+//
+//   console.log(err)
+// });
 
 channel.subscribe(function(message) {
   allPlayers.push(message.data);
@@ -103,9 +123,10 @@ export default {
       }
       //
       // this.players.push(newPlayerInfo)
-      channel.publish('allPlayers', newPlayerInfo, function(err) {
-        console.log(err)
-      });
+      channel.presence.enterClient(newPlayerInfo.name, newPlayerInfo)
+      // channel.publish('allPlayers', newPlayerInfo, function(err) {
+      //   console.log(err)
+      // });
     },
     endGame: function() {
       allPlayers = [];
