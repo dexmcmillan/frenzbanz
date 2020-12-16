@@ -28,13 +28,23 @@ import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 
 var Ably = require('ably');
-
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
+const channel = ably.channels.get('signIn');
+
+let allPlayers = []
+
 ably.connection.on('connected', function() {
+
+  channel.history(function(err, resultPage) {
+    console.log(resultPage.items[0])
+  });
   console.log("Connected!");
 });
 
-const channel = ably.channels.get('signIn');
+channel.subscribe(function(message) {
+  allPlayers.push(message.data);
+  console.log(message.id)
+});
 
 export default {
   name: 'App',
@@ -57,7 +67,7 @@ export default {
   },
   data() {
     return {
-      players: [],
+      players: allPlayers,
       words: sortedWords,
       gameStarted: 'FALSE',
     }
@@ -74,13 +84,7 @@ export default {
     },
     startGame: function() {
 
-      channel.subscribe(function(message) {
-        allPlayers.push(message.data);
-        console.log('All players added to game.')
-      });
-
       const nextID = this.players.length;
-      const allPlayers = this.players
 
       const newPlayerInfo = {
         id: nextID,
@@ -93,12 +97,18 @@ export default {
         you: "TRUE",
         score: 0,
       }
-
-      allPlayers.push(newPlayerInfo)
-
-      channel.publish('allPlayers', allPlayers, function(err){
+      //
+      // this.players.push(newPlayerInfo)
+      channel.publish('allPlayers', newPlayerInfo, function(err) {
         console.log(err)
       });
+
+      // setInterval(function(){
+      //   channel.publish('allPlayers', allPlayers, function(err) {
+      //     console.log(err)
+      //   });
+      // }, 3000);
+
       this.gameStarted = "TRUE"
     },
     endGame: function() {
