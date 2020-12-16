@@ -2,9 +2,10 @@
   <v-app>
     <div class="w-screen absolute top-0">
       <h1 class="text-center text-5xl m-10 w/screen">Headbanz!</h1>
+      <ScoreBoard v-bind:players="players"></ScoreBoard>
     </div>
     <div v-if="gameStarted === 'TRUE'" class='grid grid-cols-6 w-screen h-screen p-5'>
-      <ScoreBoard v-bind:players="players"></ScoreBoard>
+
       <div class="flex grid grid-cols-6 col-span-6 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
         <WordCard v-for="player in players" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
       </div>
@@ -15,7 +16,7 @@
       </div>
     </div>
     <div v-else class="flex h-screen">
-      <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" v-bind:name="players.name" />
+      <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="ready" v-bind:name="players.name" />
     </div>
   </v-app>
 </template>
@@ -84,6 +85,9 @@ export default {
     },
     startGame: function() {
 
+      this.gameStarted = "TRUE"
+    },
+    ready: function() {
       const nextID = this.players.length;
 
       const newPlayerInfo = {
@@ -102,17 +106,9 @@ export default {
       channel.publish('allPlayers', newPlayerInfo, function(err) {
         console.log(err)
       });
-
-      // setInterval(function(){
-      //   channel.publish('allPlayers', allPlayers, function(err) {
-      //     console.log(err)
-      //   });
-      // }, 3000);
-
-      this.gameStarted = "TRUE"
     },
     endGame: function() {
-      this.players = [];
+      allPlayers = [];
       this.gameStarted = "FALSE"
       console.log('Game ended.')
     },
