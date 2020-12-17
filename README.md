@@ -1,6 +1,15 @@
 # Headbanz
 
-## A version of headbanz to facilitate playing over video chat.
+A version of headbanz to facilitate playing over video chat.
+
+### To-do
+* Categorize words and allow players to choose categories to include.
+* Allow players to add their own words.
+* Allow players to specify how many points wins the game.
+
+### Maybe-do
+
+# Vue Commands:
 
 ## Project setup
 ```

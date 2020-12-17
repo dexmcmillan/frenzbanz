@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <div class="w-screen h-screen absolute top-0 xs:p-5">
-      <h1 class="text-left text-5xl m-10 w/screen">Headbanz!</h1>
+      <h1 class="text-left text-5xl m-10 w/screen"><span class="text-sm">(not)</span> Headbanz <span class="text-sm">v1.0.0</span></h1>
       <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
     </div>
     <div v-if="gameStarted === true" class='grid grid-cols-6 w-screen h-screen p-5'>
