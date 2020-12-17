@@ -11,8 +11,8 @@
       </div>
       <div class="absolute right-0 bottom-0 m-10">
         <v-btn class="text-3xl border-2 mx-2" style="border-radius: 5px" v-on:click="guessCard">+</v-btn>
-        <v-btn class="mx-2" v-on:click='you.score = 0'>Reset Score</v-btn>
-        <v-btn class="mx-2" v-on:click='endGame'>End Game</v-btn>
+        <v-btn class="mx-2" v-on:click='reset'>Reset Score</v-btn>
+        <v-btn class="mx-2" v-on:click='leaveGame'>Leave Game</v-btn>
       </div>
     </div>
     <div v-else class="flex h-screen">
@@ -44,7 +44,7 @@ let you = {
   score: 0,
 }
 
-ably.connection.once('connected', function() {
+let connect = ably.connection.once('connected', function() {
   channel.presence.subscribe('enter', function(member) {
     allPlayers.push(member.data)
   });
@@ -53,13 +53,22 @@ ably.connection.once('connected', function() {
     console.log('Position:' + pos)
     allPlayers.splice(pos, 1, member.data)
   });
-  channel.presence.subscribe('leave', function() {});
+  channel.presence.subscribe('leave', function() {
+    channel.presence.get(function(err, members) {
+      if(members.length >= 1) {
+        allPlayers.splice(0)
+        allPlayers.push(members[0].data)
+      }
+    });
+    this.gameStarted = 'FALSE';
+  });
   channel.presence.get(function(err, members) {
-    console.log(members.length)
     if(members.length >= 1) {
       allPlayers.push(members[0].data)
     }
   });
+
+connect.connect()
 
   console.log("Connected!");
 });
@@ -110,15 +119,22 @@ export default {
       this.gameStarted = "TRUE"
     },
     endGame: function() {
-      allPlayers = [];
       this.gameStarted = "FALSE"
-      console.log('Game ended.')
+      you.score = 0;
+      channel.presence.updateClient(you.name, you)
+    },
+    leaveGame: function() {
+      this.gameStarted = "FALSE"
+      channel.presence.leaveClient(you.name, you)
     },
     guessCard: function() {
       you.score++
-      channel.presence.updateClient(you.name, you, function(){
-      })
+      channel.presence.updateClient(you.name, you)
 
+    },
+    reset: function() {
+      you.score = 0;
+      channel.presence.updateClient(you.name, you)
     }
   }
 };
