@@ -1,5 +1,6 @@
 <template>
     <div class="p-7 rounded-lg w-1/3 mx-auto my-auto border-2 shadow-lg">
+      <p>Welcome to Zoom Headbanz! Enter your name and join the game below. First to {{ scoreToWin }} wins the game.</p>
       <v-input>
         <v-text-field id="nameBox" class="w-full" label="Name"></v-text-field>
       </v-input>
@@ -19,6 +20,7 @@ export default {
   props: {
     name: String,
     gameStarted: String,
+    scoreToWin: Number,
   },
   computed: {
     playerName: {

@@ -16,10 +16,7 @@
       </div>
     </div>
     <div v-else-if="gameStarted === 'FALSE'" class="flex h-screen">
-      <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="ready" v-bind:name="players.name" />
-    </div>
-    <div v-else-if="playerCount >= 4" class="flex h-screen">
-      <p>Can't join!</p>
+      <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="ready" v-bind:name="players.name"  :scoreToWin="scoreToWin" />
     </div>
   </v-app>
 </template>
@@ -32,7 +29,7 @@ import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 
 let allPlayers = []
-let scoreToWin = 4
+let scoreToWin = 3
 let wordsLeft = sortedWords
 let playerCount = 0;
 let you = {
@@ -45,8 +42,6 @@ var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
 const channel = ably.channels.get('signIn');
 const wordChannel = ably.channels.get('words');
-
-
 
 ably.connection.on('connected', function() {
   channel.presence.subscribe('enter', function(member) {
