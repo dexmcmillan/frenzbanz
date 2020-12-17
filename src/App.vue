@@ -159,7 +159,7 @@ export default {
         wordChannel.publish('wordsAssigned', words)
         //
         // this.players.push(newPlayerInfo)
-        channel.presence.enterClient(you.name, you)
+        channel.presence.updateClient(you.name, you)
         this.gameStarted = "TRUE"
         this.playerCount++
       }
