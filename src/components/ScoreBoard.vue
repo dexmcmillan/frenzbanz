@@ -1,16 +1,16 @@
 <template>
   <div id="hud" class="absolute right-0 top-0">
     <div class="text-right p-5">
-      <p><strong>Players</strong></p>
+      <p class="text-2xl"><strong>Players</strong></p>
       <div class="grid grid-cols-3" v-for="player in players" v-bind:key="player.id">
         <div class="col-span-1">
           <span v-if="player.score === scoreToWin" class="text-green-600">Winner! </span>
         </div>
         <div class="col-span-1 ml-5">
-          {{ player.name }}
+          <span class="text-xl">{{ player.name }}</span>
         </div>
         <div class="col-span-1">
-          {{ player.score }}
+          <span class="text-xl">{{ player.score }}</span>
         </div>
       </div>
     </div>
