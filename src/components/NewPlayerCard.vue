@@ -1,10 +1,10 @@
 <template>
-    <div class="p-7 rounded-lg md:w-1/3 xs:w-full mx-auto my-auto border-2 shadow-lg">
+    <div class="p-7 md:w-1/3 xs:w-full mx-auto my-auto">
       <h3 class="text-2xl font-bold mb-3">Rules</h3>
       <p>Each player begins their turn by starting the timer. They may then ask each other player one question about their word, which is visible only to them. You may not ask "what is my word?" but can ask questions like "do I have a tail?" If you guess your word before the timer expires, increase your score and you'll be assigned a new card. You may continue in this way until the timer expires. First player to {{ scoreToWin }} wins the game.</p>
       <p>Enter your name and join the game below. </p>
       <p>Only four players may join at once.</p>
-      <div class="w-2/3 mx-auto">
+      <div class="w-2/3 mx-auto mt-32">
         <v-text-field id="nameBox" class="w-full" label="Name"></v-text-field>
         <v-btn class="w-full my-5" v-on:click="$emit('gameStart')">Join Game</v-btn>
       </div>
