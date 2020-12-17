@@ -4,7 +4,7 @@
       <h1 class="text-center text-5xl m-10 w/screen">Headbanz!</h1>
       <ScoreBoard v-bind:players="players"></ScoreBoard>
     </div>
-    <div v-if="gameStarted === 'TRUE'" class='grid grid-cols-6 w-screen h-screen p-5'>
+    <div v-if="gameStarted === 'TRUE' && this.playerCount < 4" class='grid grid-cols-6 w-screen h-screen p-5'>
 
       <div class="flex grid grid-cols-6 col-span-6 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
         <WordCard v-for="player in players" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
@@ -15,8 +15,11 @@
         <v-btn class="mx-2" v-on:click='leaveGame'>Leave Game</v-btn>
       </div>
     </div>
-    <div v-else class="flex h-screen">
+    <div v-else-if="gameStarted === 'FALSE'" class="flex h-screen">
       <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="ready" v-bind:name="players.name" />
+    </div>
+    <div v-else-if="playerCount >= 4" class="flex h-screen">
+      <p>Can't join!</p>
     </div>
   </v-app>
 </template>
@@ -33,6 +36,7 @@ var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
 const channel = ably.channels.get('signIn');
 
 let allPlayers = []
+let playerCount = 0;
 let you = {
   id: null,
   name: null,
@@ -63,6 +67,8 @@ let connect = ably.connection.once('connected', function() {
     this.gameStarted = 'FALSE';
   });
   channel.presence.get(function(err, members) {
+    playerCount = members.length
+    console.log("Playercount: " + playerCount)
     console.log('There are ' + members.length + ' members connected.')
     if(members.length === 1) {
       allPlayers.push(members[0].data)
@@ -105,6 +111,7 @@ export default {
       players: allPlayers,
       words: sortedWords,
       gameStarted: 'FALSE',
+      playerCount: playerCount,
     }
   },
   methods: {
@@ -122,14 +129,20 @@ export default {
       this.gameStarted = "TRUE"
     },
     ready: function() {
-      const nextID = this.players.length;
+      if(playerCount < 4) {
+        const nextID = this.players.length;
 
-      you['id'] = nextID
-      you['name'] = document.getElementById('nameBox').value
-      //
-      // this.players.push(newPlayerInfo)
-      channel.presence.enterClient(you.name, you)
-      this.gameStarted = "TRUE"
+        you['id'] = nextID
+        you['name'] = document.getElementById('nameBox').value
+        //
+        // this.players.push(newPlayerInfo)
+        channel.presence.enterClient(you.name, you)
+        this.gameStarted = "TRUE"
+        this.playerCount++
+      }
+      else {
+        alert("Too many players bud!")
+      }
     },
     endGame: function() {
       this.gameStarted = "FALSE"
