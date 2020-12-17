@@ -61,18 +61,9 @@ ably.connection.once('connected', function() {
     }
   });
 
-
-  // channel.history(function(err, resultPage) {
-  //   console.log(resultPage.items[0])
-  // });
   console.log("Connected!");
 });
 
-
-// channel.publish('allPlayers', allPlayers, function(err) {
-//
-//   console.log(err)
-// });
 
 channel.subscribe(function(message) {
   allPlayers.push(message.data);
@@ -86,17 +77,6 @@ export default {
     NewPlayerCard,
     WordCard,
     ScoreBoard
-  },
-  computed: {
-    // you()  {
-    //   let you = {}
-    //   this.players.forEach((player) => {
-    //     if (player.you === "TRUE") {
-    //       you = player;
-    //     }
-    //   })
-    //   return you
-    // },
   },
   data() {
     return {
