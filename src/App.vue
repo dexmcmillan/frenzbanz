@@ -34,21 +34,18 @@ import "tailwindcss/tailwind.css"
 var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
 const channel = ably.channels.get('signIn');
+const wordChannel = ably.channels.get('words');
 
 let allPlayers = []
+let wordsLeft = sortedWords
 let playerCount = 0;
 let you = {
   id: null,
   name: null,
-  get ['assignedWord']() {
-    const sliceStart = this.id * 3
-    const sliceEnd = sliceStart + 3
-    return sortedWords.slice(sliceStart,sliceEnd)
-  },
   score: 0,
 }
 
-let connect = ably.connection.once('connected', function() {
+ably.connection.on('connected', function() {
   channel.presence.subscribe('enter', function(member) {
     allPlayers.push(member.data)
   });
@@ -68,34 +65,55 @@ let connect = ably.connection.once('connected', function() {
   });
   channel.presence.get(function(err, members) {
     playerCount = members.length
-    console.log("Playercount: " + playerCount)
-    console.log('There are ' + members.length + ' members connected.')
     if(members.length === 1) {
       allPlayers.push(members[0].data)
+      let usedWords1 = members[0].data.assignedWord
+      usedWords1.forEach((word) => {
+        let pos = sortedWords.indexOf(word)
+        sortedWords.splice(pos,1)
+      })
     }
     else if(members.length === 2) {
       allPlayers.push(members[0].data)
+      let usedWords2 = members[0].data.assignedWord
+      usedWords2.forEach((word) => {
+        let pos = sortedWords.indexOf(word)
+        sortedWords.splice(pos,1)
+      })
       allPlayers.push(members[1].data)
+      usedWords2 = members[1].data.assignedWord
+      usedWords2.forEach((word) => {
+        let pos = sortedWords.indexOf(word)
+        sortedWords.splice(pos,1)
+      })
     }
     else if(members.length === 3) {
       allPlayers.push(members[0].data)
+      let usedWords3 = members[0].data.assignedWord
+      usedWords3.forEach((word) => {
+        let pos = sortedWords.indexOf(word)
+        sortedWords.splice(pos,1)
+      })
       allPlayers.push(members[1].data)
+      usedWords3 = members[1].data.assignedWord
+      usedWords3.forEach((word) => {
+        let pos = sortedWords.indexOf(word)
+        sortedWords.splice(pos,1)
+      })
       allPlayers.push(members[2].data)
+      usedWords3 = members[2].data.assignedWord
+      usedWords3.forEach((word) => {
+        let pos = sortedWords.indexOf(word)
+        sortedWords.splice(pos,1)
+      })
     }
-    else if(members.length === 4) {
-      console.log("can't join!")
-    }
+
+
   });
-
-connect.connect()
-
+  wordChannel.subscribe(function(){
+    wordsLeft = sortedWords.splice(3)
+  })
   console.log("Connected!");
-});
-
-
-channel.subscribe(function(message) {
-  allPlayers.push(message.data);
-  console.log(message.id)
 });
 
 export default {
@@ -134,6 +152,11 @@ export default {
 
         you['id'] = nextID
         you['name'] = document.getElementById('nameBox').value
+        const sliceStart = 0
+        const sliceEnd = 3
+        const words = wordsLeft.slice(sliceStart,sliceEnd)
+        you['assignedWord'] = words
+        wordChannel.publish('wordsAssigned', words)
         //
         // this.players.push(newPlayerInfo)
         channel.presence.enterClient(you.name, you)
