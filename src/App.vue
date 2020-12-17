@@ -7,7 +7,7 @@
     <div v-if="gameStarted === 'TRUE' && this.playerCount < 4" class='grid grid-cols-6 w-screen h-screen p-5'>
 
       <div class="flex grid grid-cols-6 col-span-6 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
-        <WordCard v-for="player in players" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
+        <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
       </div>
       <div class="absolute right-0 bottom-0 m-10">
         <v-btn class="text-3xl border-2 mx-2" style="border-radius: 5px" v-on:click="guessCard">+</v-btn>
@@ -31,11 +31,6 @@ import ScoreBoard from './components/ScoreBoard';
 import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 
-var Ably = require('ably');
-var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
-const channel = ably.channels.get('signIn');
-const wordChannel = ably.channels.get('words');
-
 let allPlayers = []
 let wordsLeft = sortedWords
 let playerCount = 0;
@@ -44,6 +39,13 @@ let you = {
   name: null,
   score: 0,
 }
+
+var Ably = require('ably');
+var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
+const channel = ably.channels.get('signIn');
+const wordChannel = ably.channels.get('words');
+
+
 
 ably.connection.on('connected', function() {
   channel.presence.subscribe('enter', function(member) {
@@ -132,16 +134,19 @@ export default {
       playerCount: playerCount,
     }
   },
-  methods: {
-    allWordsButYours()  {
+  computed: {
+    allWordsButYours: function()  {
       const playersToShow = []
       this.players.forEach((player) => {
-        if (player.you === "FALSE") {
+        if (ably.connection.id !== player.code) {
           playersToShow.push(player)
         }
       })
       return playersToShow
     },
+  },
+  methods: {
+
     startGame: function() {
 
       this.gameStarted = "TRUE"
@@ -152,16 +157,32 @@ export default {
 
         you['id'] = nextID
         you['name'] = document.getElementById('nameBox').value
+        you['code'] = ably.connection.id
         const sliceStart = 0
         const sliceEnd = 3
         const words = wordsLeft.slice(sliceStart,sliceEnd)
         you['assignedWord'] = words
+        ably.auth.createTokenRequest({clientId: you.name}, null, function(err, tokenRequest) {
+          console.log(err)
+          console.log(tokenRequest)
+          you['token'] = tokenRequest.clientId
+          /* tokenRequest => {
+               "capability": "{\"*\":[\"*\"]}",
+               "clientId": "client@example.com",
+               "keyName": "xVLyHw.Tk_K7g",
+               "nonce": "5576521221082658",
+               "timestamp": 1608231554323,
+               "mac": "GZRgXssZDCegRV....EXAMPLE"
+             } */
+        });
         wordChannel.publish('wordsAssigned', words)
         //
         // this.players.push(newPlayerInfo)
         channel.presence.updateClient(you.name, you)
         this.gameStarted = "TRUE"
         this.playerCount++
+        console.log("ID: " + ably.connection.id)
+        console.log("Player Code: " + you.code)
       }
       else {
         alert("Too many players bud!")
@@ -170,11 +191,11 @@ export default {
     endGame: function() {
       this.gameStarted = "FALSE"
       you.score = 0;
-      channel.presence.updateClient(you.name, you)
+      channel.presence.update(you.name, you)
     },
     leaveGame: function() {
       this.gameStarted = "FALSE"
-      channel.presence.leaveClient(you.name, you)
+      channel.presence.leave(you)
     },
     guessCard: function() {
       you.score++
