@@ -127,6 +127,7 @@ export default {
       // channel.publish('allPlayers', newPlayerInfo, function(err) {
       //   console.log(err)
       // });
+      this.gameStarted = "TRUE"
     },
     endGame: function() {
       allPlayers = [];
