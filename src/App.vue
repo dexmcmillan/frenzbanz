@@ -63,8 +63,21 @@ let connect = ably.connection.once('connected', function() {
     this.gameStarted = 'FALSE';
   });
   channel.presence.get(function(err, members) {
-    if(members.length >= 1) {
+    console.log('There are ' + members.length + ' members connected.')
+    if(members.length === 1) {
       allPlayers.push(members[0].data)
+    }
+    else if(members.length === 2) {
+      allPlayers.push(members[0].data)
+      allPlayers.push(members[1].data)
+    }
+    else if(members.length === 3) {
+      allPlayers.push(members[0].data)
+      allPlayers.push(members[1].data)
+      allPlayers.push(members[2].data)
+    }
+    else if(members.length === 4) {
+      console.log("can't join!")
     }
   });
 
