@@ -1,5 +1,5 @@
 <template>
-  <v-btn v-on:click="this.startTimer" class="mx-2 w-36">
+  <v-btn v-on:click="this.startTimer" class="mx-2 w-36" v-bind:color="this.btnColor">
     <span v-if="timerStart===true">{{ timerCount }}</span>
     <span v-else>Start Timer</span>
   </v-btn>
@@ -13,17 +13,20 @@ export default {
   data() {
     return {
       timerCount: 60,
-      timerStart: false
+      timerStart: false,
+      btnColor: null
     }
   },
   methods:  {
     startTimer() {
       if (this.timerStart === true) {
         this.timerStart = false
+        this.btnColor = null
       }
       else if (this.timerStart === false) {
         this.timerCount--
         this.timerStart = true
+        this.btnColor = 'error'
       }
     },
   },
