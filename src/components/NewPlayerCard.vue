@@ -19,7 +19,7 @@ export default {
   },
   props: {
     name: String,
-    gameStarted: String,
+    gameStarted: Boolean,
     scoreToWin: Number,
   },
   computed: {
