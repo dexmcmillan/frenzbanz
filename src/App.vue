@@ -33,15 +33,27 @@ var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
 const channel = ably.channels.get('signIn');
 
 let allPlayers = []
+let you = {
+  id: null,
+  name: null,
+  get ['assignedWord']() {
+    const sliceStart = this.id * 3
+    const sliceEnd = sliceStart + 3
+    return sortedWords.slice(sliceStart,sliceEnd)
+  },
+  score: 0,
+}
 
 ably.connection.once('connected', function() {
-
   channel.presence.subscribe('enter', function(member) {
-
     allPlayers.push(member.data)
   });
+  channel.presence.subscribe('update', function(member) {
+    const pos = allPlayers.map(function(e) { return e.name; }).indexOf(member.data.name);
+    console.log('Position:' + pos)
+    allPlayers.splice(pos, 1, member.data)
+  });
   channel.presence.subscribe('leave', function() {});
-
   channel.presence.get(function(err, members) {
     console.log(members.length)
     if(members.length >= 1) {
@@ -76,15 +88,15 @@ export default {
     ScoreBoard
   },
   computed: {
-    you()  {
-      let you = {}
-      this.players.forEach((player) => {
-        if (player.you === "TRUE") {
-          you = player;
-        }
-      })
-      return you
-    },
+    // you()  {
+    //   let you = {}
+    //   this.players.forEach((player) => {
+    //     if (player.you === "TRUE") {
+    //       you = player;
+    //     }
+    //   })
+    //   return you
+    // },
   },
   data() {
     return {
@@ -110,23 +122,11 @@ export default {
     ready: function() {
       const nextID = this.players.length;
 
-      const newPlayerInfo = {
-        id: nextID,
-        name: document.getElementById('nameBox').value,
-        get assignedWord() {
-          const sliceStart = this.id * 3
-          const sliceEnd = sliceStart + 3
-          return sortedWords.slice(sliceStart,sliceEnd)
-        },
-        you: "TRUE",
-        score: 0,
-      }
+      you['id'] = nextID
+      you['name'] = document.getElementById('nameBox').value
       //
       // this.players.push(newPlayerInfo)
-      channel.presence.enterClient(newPlayerInfo.name, newPlayerInfo)
-      // channel.publish('allPlayers', newPlayerInfo, function(err) {
-      //   console.log(err)
-      // });
+      channel.presence.enterClient(you.name, you)
       this.gameStarted = "TRUE"
     },
     endGame: function() {
@@ -135,9 +135,10 @@ export default {
       console.log('Game ended.')
     },
     guessCard: function() {
-      if (this.you.score < 3) {
-        this.you.score++
-      }
+      you.score++
+      channel.presence.updateClient(you.name, you, function(){
+      })
+
     }
   }
 };
