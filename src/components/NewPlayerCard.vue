@@ -6,7 +6,7 @@
       <p>Only four players may join at once.</p>
       <div class="w-2/3 mx-auto">
         <v-text-field id="nameBox" class="w-full" label="Name"></v-text-field>
-        <v-btn class="w-full" v-on:click="$emit('gameStart')">Join Game</v-btn>
+        <v-btn class="w-full my-5" v-on:click="$emit('gameStart')">Join Game</v-btn>
       </div>
 
     </div>
