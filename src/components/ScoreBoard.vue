@@ -3,7 +3,7 @@
     <div class="text-right p-5">
       <div class="grid grid-cols-3" v-for="player in players" v-bind:key="player.id">
         <div class="col-span-1">
-          <span v-if="player.score === 3" class="text-green-600">Winner! </span>
+          <span v-if="player.score === scoreToWin" class="text-green-600">Winner! </span>
         </div>
         <div class="col-span-1 ml-5">
           {{ player.name }}
@@ -22,6 +22,7 @@ export default {
   name: 'ScoreBoard',
   props: {
     players: Array,
+    scoreToWin: Number,
   },
 }
 </script>

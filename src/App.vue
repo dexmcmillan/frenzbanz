@@ -2,7 +2,7 @@
   <v-app>
     <div class="w-screen absolute top-0">
       <h1 class="text-center text-5xl m-10 w/screen">Headbanz!</h1>
-      <ScoreBoard v-bind:players="players"></ScoreBoard>
+      <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
     </div>
     <div v-if="gameStarted === 'TRUE' && this.playerCount < 4" class='grid grid-cols-6 w-screen h-screen p-5'>
 
@@ -32,6 +32,7 @@ import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 
 let allPlayers = []
+let scoreToWin = 4
 let wordsLeft = sortedWords
 let playerCount = 0;
 let you = {
@@ -113,7 +114,7 @@ ably.connection.on('connected', function() {
 
   });
   wordChannel.subscribe(function(){
-    wordsLeft = sortedWords.splice(3)
+    wordsLeft = sortedWords.splice(scoreToWin)
   })
   console.log("Connected!");
 });
@@ -132,6 +133,7 @@ export default {
       words: sortedWords,
       gameStarted: 'FALSE',
       playerCount: playerCount,
+      scoreToWin: scoreToWin,
     }
   },
   computed: {
@@ -159,21 +161,13 @@ export default {
         you['name'] = document.getElementById('nameBox').value
         you['code'] = ably.connection.id
         const sliceStart = 0
-        const sliceEnd = 3
+        const sliceEnd = scoreToWin
         const words = wordsLeft.slice(sliceStart,sliceEnd)
         you['assignedWord'] = words
         ably.auth.createTokenRequest({clientId: you.name}, null, function(err, tokenRequest) {
           console.log(err)
           console.log(tokenRequest)
           you['token'] = tokenRequest.clientId
-          /* tokenRequest => {
-               "capability": "{\"*\":[\"*\"]}",
-               "clientId": "client@example.com",
-               "keyName": "xVLyHw.Tk_K7g",
-               "nonce": "5576521221082658",
-               "timestamp": 1608231554323,
-               "mac": "GZRgXssZDCegRV....EXAMPLE"
-             } */
         });
         wordChannel.publish('wordsAssigned', words)
         //
