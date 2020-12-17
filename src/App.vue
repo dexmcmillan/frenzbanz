@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <div class="w-screen absolute top-0">
-      <h1 class="text-center text-5xl m-10 w/screen">Headbanz!</h1>
+    <div class="w-screen h-screen absolute top-0 xs:p-5">
+      <h1 class="text-left text-5xl m-10 w/screen">Headbanz!</h1>
       <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
     </div>
     <div v-if="gameStarted === true" class='grid grid-cols-6 w-screen h-screen p-5'>
@@ -9,10 +9,10 @@
         <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
       </div>
       <div class="absolute right-0 bottom-0 m-10">
-        <v-btn class="text-3xl border-2 mx-2" style="border-radius: 5px" v-on:click="guessCard">+</v-btn>
-        <Timer></Timer>
-        <v-btn class="mx-2" v-on:click='reset'>Reset Score</v-btn>
-        <v-btn class="mx-2" v-on:click='leaveGame'>Leave Game</v-btn>
+        <v-btn class="text-3xl m-2" v-on:click="guessCard">+</v-btn>
+        <Timer class="m-2"></Timer>
+        <v-btn class="m-2" v-on:click='reset'>Reset Score</v-btn>
+        <v-btn class="m-2" v-on:click='leaveGame'>Leave Game</v-btn>
       </div>
     </div>
     <div v-else-if="gameStarted === false" class="flex h-screen">
@@ -30,7 +30,7 @@ import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 
 let allPlayers = []
-let scoreToWin = 3
+let scoreToWin = 10
 let wordsLeft = sortedWords
 let playerCount = 0;
 let you = {

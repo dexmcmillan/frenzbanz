@@ -1,6 +1,9 @@
 <template>
-    <div class="p-7 rounded-lg w-1/3 mx-auto my-auto border-2 shadow-lg">
-      <p>Welcome to Zoom Headbanz! Enter your name and join the game below. First to {{ scoreToWin }} wins the game.</p>
+    <div class="p-7 rounded-lg md:w-1/3 xs:w-full mx-auto my-auto border-2 shadow-lg">
+      <h3>Rules</h3>
+      <p>Each player begins their turn by starting the timer. They may then ask each other player one question about their word, which is visible only to them. You may not ask "what is my word?" but can ask questions like "do I have a tail?" If you guess your word before the timer expires, increase your score and you'll be assigned a new card. You may continue in this way until the timer expires. First player to {{ scoreToWin }} wins the game.</p>
+      <p>Enter your name and join the game below. </p>
+      <p>Only four players may join at once.</p>
       <v-input>
         <v-text-field id="nameBox" class="w-full" label="Name"></v-text-field>
       </v-input>

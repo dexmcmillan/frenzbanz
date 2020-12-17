@@ -30,7 +30,21 @@ const words = [
   "T-Rex",
   "Broomstick",
   "Halloween",
-  "Christmas Eve"
+  "Christmas Eve",
+  "Easter Bunny",
+  "Tooth Fairy",
+  "Ice Cream Truck",
+  "Octopus",
+  "Kangaroo",
+  "Tom Hanks",
+  "COVID-19",
+  "Justin Trudeau",
+  "Christmas Tree",
+  "Gingerbread",
+  "Shortbread",
+  "Banana",
+  "Orangutan",
+  "Golf",
 ]
 
 export const sortedWords = words.sort(function() {
