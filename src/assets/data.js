@@ -61,6 +61,12 @@ const movies = [
   "Return of the King",
   "Homer Simpson",
   "Hermione Granger",
+  "Blackhawk Down",
+  "Aladdin",
+  "Snow White and the Seven Dwarves",
+  "Cinderella",
+  "A Bug's Life",
+  "Monster's Inc."
 ]
 
 const christmas = [
@@ -71,6 +77,7 @@ const christmas = [
   "Snowflake",
   "Ornament",
   "Candy Cane",
+  "Wrapping Paper"
 ]
 
 export const sortedWords = general.concat(celebrities, movies, christmas).sort(function() {
