@@ -23,7 +23,7 @@ export default {
         this.timerStart = false
         this.btnColor = null
       }
-      else if (this.timerStart === false) {
+      else if (this.timerStart === false && this.timerCount !== 0) {
         this.timerCount--
         this.timerStart = true
         this.btnColor = 'error'

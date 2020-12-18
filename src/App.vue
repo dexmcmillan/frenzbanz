@@ -135,6 +135,10 @@ export default {
         if (ably.connection.id !== player.code) {
           playersToShow.push(player)
         }
+        else {
+          player.assignedWord = "?"
+          playersToShow.push(player)
+        }
       })
       return playersToShow
     },
