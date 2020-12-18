@@ -1,5 +1,4 @@
 const general = [
-  'Hello',
   'Bird',
   'Plane',
   'Whale',
@@ -70,7 +69,8 @@ const christmas = [
   "Frosty the Snowman",
   "Corn Cob Pipe",
   "Snowflake",
-
+  "Ornament",
+  "Candy Cane",
 ]
 
 export const sortedWords = general.concat(celebrities, movies, christmas).sort(function() {

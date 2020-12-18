@@ -12,6 +12,7 @@ Player-to-player communication implemented using [Ably](https://www.ably.io/). F
 * Add some colour...
 * Clean up the code now that token auth is in place.
 * Add "total word count" line on the intro page to show how many different words are in the game.
+* Add some nicer animations to the cards.
 
 ### Maybe-do
 * Nothing yet.

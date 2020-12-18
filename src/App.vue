@@ -23,7 +23,7 @@
         </div>
       </div>
       <div v-else-if="gameStarted === false" class="flex h-screen">
-        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" />
+        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
       </div>
     </div>
   </v-app>
@@ -152,6 +152,7 @@ export default {
       availableSkips: 3,
       justScored: false,
       justSkipped: false,
+      numberOfWords: sortedWords.length,
     }
   },
   computed: {
