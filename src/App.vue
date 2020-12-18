@@ -37,7 +37,6 @@ import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 import vm from './main.js'
 
-let scoreToWin = 5
 
 var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
@@ -84,8 +83,6 @@ function removePlayer() {
   });
 }
 
-
-
 ably.connection.on('connected', function() {
 
   channel.presence.subscribe('enter', function(member) {
@@ -124,7 +121,7 @@ export default {
       players: [],
       words: sortedWords,
       gameStarted: false,
-      scoreToWin: scoreToWin,
+      scoreToWin: 5,
       availableSkips: 3,
       showWord: false,
     }
@@ -163,16 +160,8 @@ export default {
           score: 0,
           assignedWord: newWord
         }
-        ably.auth.createTokenRequest({clientId: you.name}, null, function(err, tokenRequest) {
-          console.log(err)
-          console.log(tokenRequest)
-        });
-
-        //
-        // this.players.push(newPlayerInfo)
-        channel.presence.enterClient(you.name, you, function(){
-
-        })
+        ably.auth.createTokenRequest({clientId: you.name}, null, function() {});
+        channel.presence.enterClient(you.name, you, function(){})
         this.gameStarted = true
 
       }
@@ -190,7 +179,7 @@ export default {
       channel.presence.leaveClient(this.yourInfo.name, this.yourInfo)
     },
     guessCard: function() {
-      if (this.yourInfo.score < scoreToWin) {
+      if (this.yourInfo.score < this.scoreToWin) {
         this.yourInfo.score++
         this.yourInfo.assignedWord = getWord()
         channel.presence.updateClient(this.yourInfo.name, this.yourInfo)

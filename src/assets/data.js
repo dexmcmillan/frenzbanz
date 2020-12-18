@@ -56,7 +56,10 @@ const words = [
   "iPhone",
   "Orc",
   "Legolas",
-  
+  "Corn Flakes",
+  "Chocolate Milk",
+  "Air Force One",
+  "Return of the King",
 ]
 
 export const sortedWords = words.sort(function() {
