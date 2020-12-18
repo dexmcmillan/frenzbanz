@@ -43,6 +43,7 @@ var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
 const channel = ably.channels.get('signIn');
 const wordChannel = ably.channels.get('words');
+const scoreChannel = ably.channels.get('score');
 
 function getWord()  {
   const wordsLeft = sortedWords.sort(function() {
@@ -102,9 +103,34 @@ ably.connection.on('connected', function() {
 
   getCurrentPlayers();
 
-  wordChannel.subscribe(function(){
-    vm.$children[0].splice(0,1)
+  wordChannel.subscribe(function(wordChosen){
+    const pos = vm.$children[0].words.indexOf(wordChosen.data)
+    vm.$children[0].words.splice(pos,1)
   })
+
+  scoreChannel.subscribe('updatescore', function(scoreInfo){
+    console.log(scoreInfo.data)
+    const allPlayers = vm.$children[0].players
+    allPlayers.forEach((player) => {
+      if (player.code === scoreInfo.data.playerCode) {
+        player.score = scoreInfo.data.newScore
+      }
+    })
+  })
+
+  scoreChannel.subscribe('nextWordPlease', function(newWordInfo){
+    console.log(newWordInfo.data)
+    if (newWordInfo.data.playerCode !== vm.$children[0].yourInfo.code)  {
+      const allPlayers = vm.$children[0].players
+      allPlayers.forEach((player) => {
+        if (player.code === newWordInfo.data.playerCode) {
+          player.assignedWord = newWordInfo.data.newWord
+          player.displayWord = newWordInfo.data.newWord
+        }
+      })
+    }
+  })
+
   console.log("Connected!");
 });
 
@@ -182,26 +208,30 @@ export default {
     guessCard: function() {
       if (this.yourInfo.score < this.scoreToWin) {
         this.justScored = true
+        this.yourInfo.score++
         setTimeout(() => {
           this.justScored = false;
-        }, 1000);
-        this.yourInfo.score++
-        this.yourInfo.assignedWord = getWord()
-        channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
+          this.yourInfo.assignedWord = getWord()
+          scoreChannel.publish('updatescore', {playerCode: this.yourInfo.code, newScore: this.yourInfo.score})
+          scoreChannel.publish('nextWordPlease', {playerCode: this.yourInfo.code, newWord: this.yourInfo.assignedWord})
+        }, 2000);
+
+
       }
-    },
-    reset: function() {
-      this.yourInfo.score = 0;
-      channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
     },
     skip: function()  {
       this.justSkipped = true;
       setTimeout(() => {
         this.justSkipped = false;
         this.yourInfo.assignedWord = getWord()
-        channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
+        scoreChannel.publish('nextWordPlease', {playerCode: this.yourInfo.code, newWord: this.yourInfo.assignedWord})
       }, 2000);
-    }
+
+    },
+    reset: function() {
+      this.yourInfo.score = 0;
+      channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
+    },
   }
 };
 </script>

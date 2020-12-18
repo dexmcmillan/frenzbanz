@@ -1,52 +1,36 @@
-const words = [
+const general = [
   'Hello',
   'Bird',
   'Plane',
   'Whale',
-  "The Big Bang",
-  "Two and a Half Men",
   "Cold Case",
   "Magic Wand",
   "Harry Potter",
   "Pear",
   "Hot Air Balloon",
   "France",
-  "Rudolph",
-  "Frosty the Snowman",
-  "Corn Cob Pipe",
-  "Snowflake",
-  "Britney Spears",
-  "Elon Musk",
   "Ford",
   "Westworld",
-  "Donald Trump",
-  "Hermione Granger",
   "CBC News",
   "Pineapple",
   "Cactus",
   "Arizona",
-  "Homer Simpson",
   "National Geographic",
   "T-Rex",
   "Broomstick",
   "Halloween",
-  "Christmas Eve",
   "Easter Bunny",
   "Tooth Fairy",
   "Ice Cream Truck",
   "Octopus",
   "Kangaroo",
-  "Tom Hanks",
   "COVID-19",
-  "Justin Trudeau",
   "Christmas Tree",
   "Gingerbread",
   "Shortbread",
   "Banana",
   "Orangutan",
   "Golf",
-  "Bill Gates",
-  "Jeff Bezos",
   "Amazon",
   "Apple",
   "Youtube",
@@ -54,14 +38,41 @@ const words = [
   "Merlot",
   "Lager",
   "iPhone",
-  "Orc",
-  "Legolas",
   "Corn Flakes",
   "Chocolate Milk",
   "Air Force One",
-  "Return of the King",
 ]
 
-export const sortedWords = words.sort(function() {
+const celebrities = [
+  "Bill Gates",
+  "Jeff Bezos",
+  "Justin Trudeau",
+  "Britney Spears",
+  "Elon Musk",
+  "Tom Hanks",
+  "Donald Trump",
+]
+
+const movies = [
+  "Return of the King",
+  "The Big Bang",
+  "Two and a Half Men",
+  "Orc",
+  "Legolas",
+  "Return of the King",
+  "Homer Simpson",
+  "Hermione Granger",
+]
+
+const christmas = [
+  "Christmas Eve",
+  "Rudolph",
+  "Frosty the Snowman",
+  "Corn Cob Pipe",
+  "Snowflake",
+
+]
+
+export const sortedWords = general.concat(celebrities, movies, christmas).sort(function() {
   return 0.5 - Math.random();
 })
