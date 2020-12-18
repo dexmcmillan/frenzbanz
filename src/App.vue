@@ -1,16 +1,16 @@
 <template>
   <v-app>
     <div class="w-screen h-screen">
-      <div class="w-screen h-screen absolute top-0 xs:p-5">
+      <div class="absolute top-0 xs:p-5">
         <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.1.0</span></h1>
         <div v-if="showWord === true" class="text-left md:text-xl sm:text-4xl m-8 w-screen">
           <p><em>Skipped: {{ yourInfo.assignedWord }}</em></p>
         </div>
-        <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
       </div>
-      <div v-if="gameStarted === true" class='grid grid-cols-6 w-screen h-screen p-5'>
+      <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
+      <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
 
-        <div class="flex grid grid-cols-6 col-span-6 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
+        <div class="flex grid grid-cols-3 col-span-1 w-full sm:w-1/3 h-full self-center content-center gap-24 mx-auto">
           <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:wordNum="player.score" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
         </div>
         <div class="absolute right-0 bottom-0 m-10">
@@ -148,9 +148,9 @@ export default {
   },
   methods: {
     startGame: function() {
-      if(vm.$children[0].players.length !== 1) {
-        getCurrentPlayers();
-      }
+      // if(vm.$children[0].players.length !== 1) {
+      //   getCurrentPlayers();
+      // }
 
       if(vm.$children[0].players.length < 4) {
         const newWord = getWord()
