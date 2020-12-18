@@ -3,15 +3,15 @@
     <div class="w-screen h-screen">
       <div class="absolute top-0 xs:p-5">
         <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.1.0</span></h1>
-        <div v-if="showWord === true" class="text-left md:text-xl sm:text-4xl m-8 w-screen">
+        <!-- <div v-if="justSkipped === true" class="text-left md:text-xl sm:text-4xl m-8 w-screen">
           <p><em>Skipped: {{ yourInfo.assignedWord }}</em></p>
-        </div>
+        </div> -->
       </div>
       <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
       <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
 
         <div class="flex grid grid-cols-3 col-span-1 w-full sm:w-1/3 h-full self-center content-center gap-24 mx-auto">
-          <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:wordNum="player.score" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
+          <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:assignedWord="player.assignedWord" v-bind:displayWord="player.displayWord" v-bind:playerName="player.name" v-bind:justScored="justScored" v-bind:justSkipped="justSkipped"></WordCard>
         </div>
         <div class="absolute right-0 bottom-0 m-10">
           <div class="text-center w-20 text-green-400" v-if="justScored === true">+1</div>
@@ -124,8 +124,8 @@ export default {
       gameStarted: false,
       scoreToWin: 5,
       availableSkips: 3,
-      showWord: false,
       justScored: false,
+      justSkipped: false,
     }
   },
   computed: {
@@ -136,20 +136,14 @@ export default {
           playersToShow.push(player)
         }
         else {
-          player.assignedWord = "?"
+          player.displayWord = "?"
           playersToShow.push(player)
         }
       })
       return playersToShow
     },
     yourInfo() {
-      let yourFile = {}
-      this.players.forEach((player) => {
-        if (ably.connection.id === player.code) {
-          yourFile = player
-        }
-      })
-      return yourFile
+      return thisPlayer()
     }
   },
   methods: {
@@ -164,7 +158,8 @@ export default {
           code: ably.connection.id,
           name: document.getElementById('nameBox').value,
           score: 0,
-          assignedWord: newWord
+          assignedWord: newWord,
+          displayWord: newWord,
         }
         ably.auth.createTokenRequest({clientId: you.name}, null, function() {});
         channel.presence.enterClient(you.name, you, function(){})
@@ -200,9 +195,9 @@ export default {
       channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
     },
     skip: function()  {
-      this.showWord = true;
+      this.justSkipped = true;
       setTimeout(() => {
-        this.showWord = false;
+        this.justSkipped = false;
         this.yourInfo.assignedWord = getWord()
         channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
       }, 2000);
@@ -212,5 +207,4 @@ export default {
 </script>
 
 <style>
-
 </style>
