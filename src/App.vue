@@ -3,9 +3,13 @@
     <div class="w-screen h-screen">
       <div class="w-screen h-screen absolute top-0 xs:p-5">
         <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.1.0</span></h1>
+        <div v-if="showWord === true" class="text-left md:text-xl sm:text-4xl m-8 w-screen">
+          <p><em>Skipped: {{ you.assignedWord }}</em></p>
+        </div>
         <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
       </div>
       <div v-if="gameStarted === true" class='grid grid-cols-6 w-screen h-screen p-5'>
+
         <div class="flex grid grid-cols-6 col-span-6 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
           <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:wordNum="player.score" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
         </div>
@@ -112,7 +116,9 @@ export default {
       gameStarted: false,
       playerCount: playerCount,
       scoreToWin: scoreToWin,
-      availableSkips: 3
+      availableSkips: 3,
+      you: you,
+      showWord: false,
     }
   },
   computed: {
@@ -129,11 +135,11 @@ export default {
   methods: {
     startGame: function() {
       if(playerCount < 4) {
-        const nextID = this.players.length;
-
-        you['id'] = nextID
+        // Get players name from box.
         you['name'] = document.getElementById('nameBox').value
+        // Assign player a unique identifier.
         you['code'] = ably.connection.id
+        // Get a word for the player from the word pool and assign it to their local profile.
         const newWord = getWord()
         you['assignedWord'] = newWord
         ably.auth.createTokenRequest({clientId: you.name}, null, function(err, tokenRequest) {
@@ -175,12 +181,17 @@ export default {
       channel.presence.updateClient(you.name, you)
     },
     skip: function()  {
-      you.assignedWord = getWord()
-      channel.presence.updateClient(you.name, you)
+      this.showWord = true;
+      setTimeout(() => {
+        this.showWord = false;
+        you.assignedWord = getWord()
+        channel.presence.updateClient(you.name, you)
+      }, 5000);
     }
   }
 };
 </script>
 
 <style>
+
 </style>
