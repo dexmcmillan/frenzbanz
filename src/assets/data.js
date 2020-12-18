@@ -45,6 +45,18 @@ const words = [
   "Banana",
   "Orangutan",
   "Golf",
+  "Bill Gates",
+  "Jeff Bezos",
+  "Amazon",
+  "Apple",
+  "Youtube",
+  "Envelope",
+  "Merlot",
+  "Lager",
+  "iPhone",
+  "Orc",
+  "Legolas",
+  
 ]
 
 export const sortedWords = words.sort(function() {

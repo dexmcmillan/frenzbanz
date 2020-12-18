@@ -1,7 +1,7 @@
 <template>
     <div :id="cardId" class="border-2 col-span-3 p-5 rounded-lg h-40 text-left shadow-lg">
       <p class="">{{ playerName }}</p>
-      <h1 class="text-center text-4xl">{{ word[score] }}</h1>
+      <h1 class="text-center text-4xl">{{ word[wordNum] }}</h1>
     </div>
 </template>
 
@@ -13,7 +13,8 @@ export default {
   props: {
     word: Array,
     playerName: String,
-    score: Number
+    score: Number,
+    wordNum: Number,
   },
   computed: {
     cardId: function() {

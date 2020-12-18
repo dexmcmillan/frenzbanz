@@ -2,22 +2,23 @@
   <v-app>
     <div class="w-screen h-screen">
       <div class="w-screen h-screen absolute top-0 xs:p-5">
-        <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">bandz</span> <span class="text-sm">v1.0.0</span></h1>
+        <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.0.0</span></h1>
         <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
       </div>
       <div v-if="gameStarted === true" class='grid grid-cols-6 w-screen h-screen p-5'>
         <div class="flex grid grid-cols-6 col-span-6 w-1/2 h-1/2 self-center content-center gap-24 mx-auto">
-          <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
+          <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:wordNum="player.wordNum" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
         </div>
         <div class="absolute right-0 bottom-0 m-10">
-          <v-btn rounded="true" class=" m-2" v-on:click="guessCard"><span class="text-lg">+</span></v-btn>
+          <v-btn rounded class="m-2" v-on:click="guessCard"><span class="text-lg">+</span></v-btn>
+          <v-btn rounded class="m-2" v-on:click="skip"><span class="text-lg">Skip ({{ skipsLeft }} left)</span></v-btn>
           <Timer class="m-2"></Timer>
-          <v-btn rounded="true" class="m-2" v-on:click='reset'><span class="text-lg">Reset Score</span></v-btn>
-          <v-btn rounded="true" class="m-2" v-on:click='leaveGame'><span class="text-lg">Leave Game</span></v-btn>
+          <v-btn rounded class="m-2" v-on:click='reset'><span class="text-lg">Reset Score</span></v-btn>
+          <v-btn rounded class="m-2" v-on:click='leaveGame'><span class="text-lg">Leave Game</span></v-btn>
         </div>
       </div>
       <div v-else-if="gameStarted === false" class="flex h-screen">
-        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="ready" v-bind:name="players.name"  :scoreToWin="scoreToWin" />
+        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" v-bind:name="players.name" :scoreToWin="scoreToWin" />
       </div>
     </div>
   </v-app>
@@ -32,13 +33,15 @@ import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 
 let allPlayers = []
-let scoreToWin = 10
+let scoreToWin = 5
+let availableSkips = 3
 let wordsLeft = sortedWords
 let playerCount = 0;
 let you = {
   id: null,
   name: null,
   score: 0,
+  wordNum: 0,
 }
 
 var Ably = require('ably');
@@ -111,7 +114,7 @@ ably.connection.on('connected', function() {
 
   });
   wordChannel.subscribe(function(){
-    wordsLeft = sortedWords.splice(scoreToWin)
+    wordsLeft = sortedWords.splice(scoreToWin + availableSkips)
   })
   console.log("Connected!");
 });
@@ -132,6 +135,8 @@ export default {
       gameStarted: false,
       playerCount: playerCount,
       scoreToWin: scoreToWin,
+      wordNum: you.wordNum,
+      availableSkips: availableSkips
     }
   },
   computed: {
@@ -144,22 +149,23 @@ export default {
       })
       return playersToShow
     },
+    skipsLeft: function() {
+      console.log(this.availableSkips - (you.wordNum - you.score))
+      return this.availableSkips - (you.wordNum - you.score)
+    }
   },
   methods: {
 
     startGame: function() {
-
-      this.gameStarted = true
-    },
-    ready: function() {
       if(playerCount < 4) {
         const nextID = this.players.length;
 
         you['id'] = nextID
         you['name'] = document.getElementById('nameBox').value
         you['code'] = ably.connection.id
+        you['wordNum'] = 0;
         const sliceStart = 0
-        const sliceEnd = scoreToWin
+        const sliceEnd = scoreToWin + availableSkips
         const words = wordsLeft.slice(sliceStart,sliceEnd)
         you['assignedWord'] = words
         ably.auth.createTokenRequest({clientId: you.name}, null, function(err, tokenRequest) {
@@ -183,6 +189,7 @@ export default {
     endGame: function() {
       this.gameStarted = false
       you.score = 0;
+      you.wordNum = 0;
       channel.presence.update(you.name, you)
     },
     leaveGame: function() {
@@ -192,11 +199,16 @@ export default {
     guessCard: function() {
       if (you.score < scoreToWin) {
         you.score++
+        you.wordNum++
         channel.presence.updateClient(you.name, you)
       }
     },
     reset: function() {
       you.score = 0;
+      channel.presence.updateClient(you.name, you)
+    },
+    skip: function()  {
+      you.wordNum++
       channel.presence.updateClient(you.name, you)
     }
   }
