@@ -2,12 +2,12 @@
   <v-app>
     <div class="w-screen h-screen">
       <div class="absolute top-0 xs:p-5">
-        <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.1.0</span></h1>
+        <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.1.2</span></h1>
         <!-- <div v-if="justSkipped === true" class="text-left md:text-xl sm:text-4xl m-8 w-screen">
           <p><em>Skipped: {{ yourInfo.assignedWord }}</em></p>
         </div> -->
       </div>
-      <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
+      <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin" :yourName="yourInfo.name"></ScoreBoard>
       <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
 
         <div class="flex grid grid-cols-3 col-span-1 w-full sm:w-1/3 h-full self-center content-center gap-24 mx-auto">

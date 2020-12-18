@@ -7,7 +7,7 @@
           <span v-if="player.score === scoreToWin" class="text-green-600">Winner! </span>
         </div>
         <div class="col-span-1 ml-5">
-          <span class="text-xl">{{ player.name }}</span>
+          <span class="text-xl">{{ player.name }}<span v-if="yourName === player.name" class="text-xs"> (you)</span></span>
         </div>
         <div class="col-span-1">
           <span class="text-xl">{{ player.score }}</span>
@@ -24,6 +24,7 @@ export default {
   props: {
     players: Array,
     scoreToWin: Number,
+    yourName: String,
   },
 }
 </script>
