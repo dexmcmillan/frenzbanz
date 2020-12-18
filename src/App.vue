@@ -2,7 +2,7 @@
   <v-app>
     <div class="w-screen h-screen">
       <div class="w-screen h-screen absolute top-0 xs:p-5">
-        <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.0.0</span></h1>
+        <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.1.0</span></h1>
         <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
       </div>
       <div v-if="gameStarted === true" class='grid grid-cols-6 w-screen h-screen p-5'>
@@ -10,8 +10,8 @@
           <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:wordNum="player.score" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
         </div>
         <div class="absolute right-0 bottom-0 m-10">
-          <v-btn rounded class="m-2" v-on:click="guessCard"><span class="text-lg">+</span></v-btn>
-          <v-btn rounded class="m-2" v-on:click="skip"><span class="text-lg">Skip ({{ skipsLeft }} left)</span></v-btn>
+          <v-btn rounded class="m-2" v-on:click="guessCard"><span class="text-lg">＋</span></v-btn>
+          <v-btn rounded class="m-2" v-on:click="skip"><span class="text-lg">Skip</span></v-btn>
           <Timer class="m-2"></Timer>
           <v-btn rounded class="m-2" v-on:click='reset'><span class="text-lg">Reset Score</span></v-btn>
           <v-btn rounded class="m-2" v-on:click='leaveGame'><span class="text-lg">Leave Game</span></v-btn>

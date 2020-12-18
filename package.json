@@ -11,6 +11,7 @@
     "@tailwindcss/postcss7-compat": "^2.0.2",
     "ably": "^1.2.4",
     "autoprefixer": "^9.8.6",
+    "bootstrap-icons": "^1.2.1",
     "core-js": "^3.6.5",
     "express": "^4.17.1",
     "postcss": "^7.0.35",
