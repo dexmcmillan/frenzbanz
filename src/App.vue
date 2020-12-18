@@ -35,8 +35,8 @@ import ScoreBoard from './components/ScoreBoard';
 import Timer from './components/Timer';
 import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
+import vm from './main.js'
 
-let allPlayers = []
 let scoreToWin = 5
 let playerCount = 0;
 
@@ -57,20 +57,20 @@ function getWord()  {
 ably.connection.on('connected', function() {
 
   channel.presence.subscribe('enter', function(member) {
-    allPlayers.push(member.data)
+    vm.$children[0].players.push(member.data)
   });
 
   channel.presence.subscribe('update', function(member) {
-    const pos = allPlayers.map(function(e) { return e.name; }).indexOf(member.data.name);
-    allPlayers.splice(pos, 1, member.data)
+    const pos = vm.$children[0].players.map(function(e) { return e.name; }).indexOf(member.data.name);
+    vm.$children[0].players.splice(pos, 1, member.data)
   });
 
   channel.presence.subscribe('leave', function(member) {
-    const pos = allPlayers.map(function(e) { return e.name; }).indexOf(member.data.name);
-    allPlayers.splice(pos, 1, member.data)
+    const pos = vm.$children[0].players.map(function(e) { return e.name; }).indexOf(member.data.name);
+    vm.$children[0].players.splice(pos, 1, member.data)
     channel.presence.get(function(err, members) {
-        allPlayers.splice(0)
-        allPlayers.push(members[0].data)
+        vm.$children[0].players.splice(0)
+        vm.$children[0].players.push(members[0].data)
     });
     playerCount--
   });
@@ -78,16 +78,16 @@ ably.connection.on('connected', function() {
   channel.presence.get(function(err, members) {
     playerCount = members.length
     if(members.length === 1) {
-      allPlayers.push(members[0].data)
+      vm.$children[0].players.push(members[0].data)
     }
     else if(members.length === 2) {
-      allPlayers.push(members[0].data)
-      allPlayers.push(members[1].data)
+      vm.$children[0].players.push(members[0].data)
+      vm.$children[0].players.push(members[1].data)
     }
     else if(members.length === 3) {
-      allPlayers.push(members[0].data)
-      allPlayers.push(members[1].data)
-      allPlayers.push(members[2].data)
+      vm.$children[0].players.push(members[0].data)
+      vm.$children[0].players.push(members[1].data)
+      vm.$children[0].players.push(members[2].data)
     }
 
 
@@ -109,7 +109,7 @@ export default {
   },
   data() {
     return {
-      players: allPlayers,
+      players: [],
       words: sortedWords,
       gameStarted: false,
       playerCount: playerCount,
@@ -158,7 +158,6 @@ export default {
         channel.presence.updateClient(you.name, you)
         this.gameStarted = true
         this.playerCount++
-        console.log(this.yourInfo)
       }
       else {
         alert("Too many players bud!")
