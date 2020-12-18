@@ -38,7 +38,6 @@ import "tailwindcss/tailwind.css"
 import vm from './main.js'
 
 let scoreToWin = 5
-let playerCount = 0;
 
 var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
@@ -54,10 +53,19 @@ function getWord()  {
   return wordsLeft[0]
 }
 
+function getCurrentPlayers()  {
+  channel.presence.get(function(err, members) {
+    members.forEach((player) => {
+      vm.$children[0].players.push(members[player].data)
+    })
+  });
+}
+
 ably.connection.on('connected', function() {
 
   channel.presence.subscribe('enter', function(member) {
     vm.$children[0].players.push(member.data)
+    console.log(vm.$children[0].players.length)
   });
 
   channel.presence.subscribe('update', function(member) {
@@ -72,26 +80,10 @@ ably.connection.on('connected', function() {
         vm.$children[0].players.splice(0)
         vm.$children[0].players.push(members[0].data)
     });
-    playerCount--
   });
 
-  channel.presence.get(function(err, members) {
-    playerCount = members.length
-    if(members.length === 1) {
-      vm.$children[0].players.push(members[0].data)
-    }
-    else if(members.length === 2) {
-      vm.$children[0].players.push(members[0].data)
-      vm.$children[0].players.push(members[1].data)
-    }
-    else if(members.length === 3) {
-      vm.$children[0].players.push(members[0].data)
-      vm.$children[0].players.push(members[1].data)
-      vm.$children[0].players.push(members[2].data)
-    }
+  getCurrentPlayers();
 
-
-  });
   wordChannel.subscribe(function(){
     sortedWords.splice(0,1)
   })
@@ -112,7 +104,6 @@ export default {
       players: [],
       words: sortedWords,
       gameStarted: false,
-      playerCount: playerCount,
       scoreToWin: scoreToWin,
       availableSkips: 3,
       showWord: false,
@@ -140,7 +131,11 @@ export default {
   },
   methods: {
     startGame: function() {
-      if(playerCount < 4) {
+      if(vm.$children[0].players.length !== 1) {
+        getCurrentPlayers();
+      }
+
+      if(vm.$children[0].players.length < 4) {
         const newWord = getWord()
         let you = {
           code: ably.connection.id,
@@ -155,9 +150,11 @@ export default {
 
         //
         // this.players.push(newPlayerInfo)
-        channel.presence.updateClient(you.name, you)
+        channel.presence.enterClient(you.name, you, function(){
+
+        })
         this.gameStarted = true
-        this.playerCount++
+
       }
       else {
         alert("Too many players bud!")
@@ -166,7 +163,7 @@ export default {
     endGame: function() {
       this.gameStarted = false
       this.yourInfo.score = 0;
-      channel.presence.update(this.yourInfo.name, this.yourInfo)
+      channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
     },
     leaveGame: function() {
       this.gameStarted = false
