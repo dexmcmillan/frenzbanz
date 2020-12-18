@@ -5,7 +5,7 @@
       <p>Enter your name and join the game below. </p>
       <p>Only four players may join at once.</p>
       <div class="w-2/3 mx-auto sm:mt-32 md:mt-24">
-        <v-text-field :rules="nameRules" outlined="true" id="nameBox" class="w-full text-xl" label="Name"></v-text-field>
+        <v-text-field :rules="[(input) => !!input || 'Name is required', (input) => input.length <= 10 || 'Name must be less than 10 characters',]" outlined id="nameBox" class="w-full text-xl" label="Name"></v-text-field>
         <v-btn rounded class="w-full my-5" v-on:click="$emit('gameStart')">Join Game</v-btn>
       </div>
 
@@ -20,14 +20,6 @@ export default {
   model: {
     prop: 'name',
     event: 'input'
-  },
-  data() {
-    return {
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters',
-      ],
-    }
   },
   props: {
     name: String,
