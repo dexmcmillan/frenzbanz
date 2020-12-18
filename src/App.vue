@@ -56,10 +56,35 @@ function getWord()  {
 function getCurrentPlayers()  {
   channel.presence.get(function(err, members) {
     members.forEach((player) => {
-      vm.$children[0].players.push(members[player].data)
+      vm.$children[0].players.push(player.data)
     })
   });
 }
+
+function updatePlayerData(member) {
+  const pos = vm.$children[0].players.map(function(e) { return e.name; }).indexOf(member.data.name);
+  vm.$children[0].players.splice(pos, 1, member.data)
+}
+
+function thisPlayer() {
+  let yourFile = {}
+  vm.$children[0].players.forEach((player) => {
+    if (ably.connection.id === player.code) {
+      yourFile = player
+    }
+  })
+  return yourFile
+}
+
+function removePlayer() {
+  channel.presence.get(function(err, members) {
+    const pos = members.indexOf(thisPlayer().code)
+    vm.$children[0].players.splice(pos)
+    vm.$children[0].players.push(members[pos].data)
+  });
+}
+
+
 
 ably.connection.on('connected', function() {
 
@@ -69,17 +94,12 @@ ably.connection.on('connected', function() {
   });
 
   channel.presence.subscribe('update', function(member) {
-    const pos = vm.$children[0].players.map(function(e) { return e.name; }).indexOf(member.data.name);
-    vm.$children[0].players.splice(pos, 1, member.data)
+    updatePlayerData(member)
   });
 
   channel.presence.subscribe('leave', function(member) {
-    const pos = vm.$children[0].players.map(function(e) { return e.name; }).indexOf(member.data.name);
-    vm.$children[0].players.splice(pos, 1, member.data)
-    channel.presence.get(function(err, members) {
-        vm.$children[0].players.splice(0)
-        vm.$children[0].players.push(members[0].data)
-    });
+    removePlayer()
+    updatePlayerData(member)
   });
 
   getCurrentPlayers();
