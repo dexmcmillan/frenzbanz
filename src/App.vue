@@ -4,7 +4,7 @@
       <div class="w-screen h-screen absolute top-0 xs:p-5">
         <h1 class="text-left md:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.1.0</span></h1>
         <div v-if="showWord === true" class="text-left md:text-xl sm:text-4xl m-8 w-screen">
-          <p><em>Skipped: {{ you.assignedWord }}</em></p>
+          <p><em>Skipped: {{ yourInfo.assignedWord }}</em></p>
         </div>
         <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
       </div>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div v-else-if="gameStarted === false" class="flex h-screen">
-        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" v-bind:name="players.name" :scoreToWin="scoreToWin" />
+        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" />
       </div>
     </div>
   </v-app>
@@ -39,12 +39,6 @@ import "tailwindcss/tailwind.css"
 let allPlayers = []
 let scoreToWin = 5
 let playerCount = 0;
-let you = {
-  id: null,
-  name: null,
-  score: 0,
-  wordNum: 0,
-}
 
 var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
@@ -61,13 +55,16 @@ function getWord()  {
 }
 
 ably.connection.on('connected', function() {
+
   channel.presence.subscribe('enter', function(member) {
     allPlayers.push(member.data)
   });
+
   channel.presence.subscribe('update', function(member) {
     const pos = allPlayers.map(function(e) { return e.name; }).indexOf(member.data.name);
     allPlayers.splice(pos, 1, member.data)
   });
+
   channel.presence.subscribe('leave', function(member) {
     const pos = allPlayers.map(function(e) { return e.name; }).indexOf(member.data.name);
     allPlayers.splice(pos, 1, member.data)
@@ -77,6 +74,7 @@ ably.connection.on('connected', function() {
     });
     playerCount--
   });
+
   channel.presence.get(function(err, members) {
     playerCount = members.length
     if(members.length === 1) {
@@ -117,7 +115,6 @@ export default {
       playerCount: playerCount,
       scoreToWin: scoreToWin,
       availableSkips: 3,
-      you: you,
       showWord: false,
     }
   },
@@ -130,22 +127,30 @@ export default {
         }
       })
       return playersToShow
+    },
+    yourInfo() {
+      let yourFile = {}
+      this.players.forEach((player) => {
+        if (ably.connection.id === player.code) {
+          yourFile = player
+        }
+      })
+      return yourFile
     }
   },
   methods: {
     startGame: function() {
       if(playerCount < 4) {
-        // Get players name from box.
-        you['name'] = document.getElementById('nameBox').value
-        // Assign player a unique identifier.
-        you['code'] = ably.connection.id
-        // Get a word for the player from the word pool and assign it to their local profile.
         const newWord = getWord()
-        you['assignedWord'] = newWord
+        let you = {
+          code: ably.connection.id,
+          name: document.getElementById('nameBox').value,
+          score: 0,
+          assignedWord: newWord
+        }
         ably.auth.createTokenRequest({clientId: you.name}, null, function(err, tokenRequest) {
           console.log(err)
           console.log(tokenRequest)
-          you['token'] = tokenRequest.clientId
         });
 
         //
@@ -153,8 +158,7 @@ export default {
         channel.presence.updateClient(you.name, you)
         this.gameStarted = true
         this.playerCount++
-        console.log("ID: " + ably.connection.id)
-        console.log("Player Code: " + you.code)
+        console.log(this.yourInfo)
       }
       else {
         alert("Too many players bud!")
@@ -162,31 +166,31 @@ export default {
     },
     endGame: function() {
       this.gameStarted = false
-      you.score = 0;
-      channel.presence.update(you.name, you)
+      this.yourInfo.score = 0;
+      channel.presence.update(this.yourInfo.name, this.yourInfo)
     },
     leaveGame: function() {
       this.gameStarted = false
-      channel.presence.leaveClient(you.name, you)
+      channel.presence.leaveClient(this.yourInfo.name, this.yourInfo)
     },
     guessCard: function() {
-      if (you.score < scoreToWin) {
-        you.score++
-        you.assignedWord = getWord()
-        channel.presence.updateClient(you.name, you)
+      if (this.yourInfo.score < scoreToWin) {
+        this.yourInfo.score++
+        this.yourInfo.assignedWord = getWord()
+        channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
       }
     },
     reset: function() {
-      you.score = 0;
-      channel.presence.updateClient(you.name, you)
+      this.yourInfo.score = 0;
+      channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
     },
     skip: function()  {
       this.showWord = true;
       setTimeout(() => {
         this.showWord = false;
-        you.assignedWord = getWord()
-        channel.presence.updateClient(you.name, you)
-      }, 5000);
+        this.yourInfo.assignedWord = getWord()
+        channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
+      }, 2000);
     }
   }
 };
