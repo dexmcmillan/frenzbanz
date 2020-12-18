@@ -14,6 +14,7 @@
           <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:wordNum="player.score" v-bind:word="player.assignedWord" v-bind:playerName="player.name" v-bind:score="player.score"></WordCard>
         </div>
         <div class="absolute right-0 bottom-0 m-10">
+          <div class="text-center w-20 text-green-400" v-if="justScored === true">+1</div>
           <v-btn rounded class="m-2" v-on:click="guessCard"><span class="text-lg">＋</span></v-btn>
           <v-btn rounded class="m-2" v-on:click="skip"><span class="text-lg">Skip</span></v-btn>
           <Timer class="m-2"></Timer>
@@ -102,7 +103,7 @@ ably.connection.on('connected', function() {
   getCurrentPlayers();
 
   wordChannel.subscribe(function(){
-    sortedWords.splice(0,1)
+    vm.$children[0].splice(0,1)
   })
   console.log("Connected!");
 });
@@ -124,6 +125,7 @@ export default {
       scoreToWin: 5,
       availableSkips: 3,
       showWord: false,
+      justScored: false,
     }
   },
   computed: {
@@ -180,6 +182,10 @@ export default {
     },
     guessCard: function() {
       if (this.yourInfo.score < this.scoreToWin) {
+        this.justScored = true
+        setTimeout(() => {
+          this.justScored = false;
+        }, 1000);
         this.yourInfo.score++
         this.yourInfo.assignedWord = getWord()
         channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
