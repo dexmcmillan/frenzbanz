@@ -8,7 +8,7 @@
       <ButtonBar v-on:guessCard="guessCard" v-on:skip="skip" v-on:reset="reset" v-on:leaveGame="leaveGame" class="m-2"></ButtonBar>
     </div>
     <div v-if="gameStarted === false" class="flex h-screen">
-      <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
+      <Intro v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
     </div>
     <div v-bind:class="{'fade': gameWon}" class="absolute top-0 xs:p-5">
       <h1 class="text-left lg:text-6xl text-3xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.3.0</span></h1>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import NewPlayerCard from './components/NewPlayerCard';
+import Intro from './components/Intro';
 import WordCard from './components/WordCard';
 import ScoreBoard from './components/ScoreBoard';
 import WinnerBox from './components/WinnerBox';
@@ -164,7 +164,7 @@ ably.connection.on('connected', function() {
 export default {
   name: 'App',
   components: {
-    NewPlayerCard,
+    Intro,
     WordCard,
     ScoreBoard,
     ButtonBar,
