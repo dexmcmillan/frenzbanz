@@ -7,7 +7,7 @@
           <p><em>Skipped: {{ yourInfo.assignedWord }}</em></p>
         </div> -->
       </div>
-      <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
+      <ScoreBoard v-if="gameroomSetup === false" v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
       <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
 
         <div class="flex grid grid-cols-3 col-span-1 w-full md:w-1/3 h-full self-center content-center gap-24 mx-auto">
@@ -22,8 +22,11 @@
           <v-btn rounded class="m-2" v-on:click='leaveGame'><span class="text-lg">Leave Game</span></v-btn>
         </div>
       </div>
-      <div v-else-if="gameStarted === false" class="flex h-screen">
+      <div v-if="gameStarted === false && gameroomSetup === false" class="flex h-screen">
         <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
+      </div>
+      <div v-else-if="gameroomSetup === true" class="flex h-screen">
+        <GameroomSetup v-on:roomStart="roomStart" />
       </div>
     </div>
   </v-app>
@@ -33,6 +36,7 @@
 import NewPlayerCard from './components/NewPlayerCard';
 import WordCard from './components/WordCard';
 import ScoreBoard from './components/ScoreBoard';
+import GameroomSetup from './components/GameroomSetup';
 import Timer from './components/Timer';
 import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
@@ -141,7 +145,8 @@ export default {
     NewPlayerCard,
     WordCard,
     ScoreBoard,
-    Timer
+    Timer,
+    GameroomSetup
   },
   data() {
     return {
@@ -153,6 +158,8 @@ export default {
       justScored: false,
       justSkipped: false,
       numberOfWords: sortedWords.length,
+      gameroomSetup: true,
+      roomName: null,
     }
   },
   computed: {
@@ -196,6 +203,12 @@ export default {
       else {
         alert("Too many players bud!")
       }
+    },
+    roomStart: function() {
+      this.gameroomSetup = false
+      const roomID =  document.getElementById('roomBox').value
+      this.roomName = roomID
+      console.log(roomID)
     },
     endGame: function() {
       this.gameStarted = false
