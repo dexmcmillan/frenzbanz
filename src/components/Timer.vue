@@ -1,7 +1,7 @@
 <template>
   <v-btn rounded v-on:click="this.startTimer" class="mx-2 p-2" v-bind:color="this.btnColor">
     <span v-if="timerStart===true" class="text-xl">{{ timerCount }}</span>
-    <span v-else class="text-lg">Start Timer</span>
+    <span v-else class="text-lg"><v-icon>mdi-timer-sand</v-icon></span>
   </v-btn>
 </template>
 
