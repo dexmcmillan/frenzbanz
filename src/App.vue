@@ -23,7 +23,7 @@
         </div>
       </div>
       <div v-if="gameStarted === false" class="flex h-screen">
-        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
+        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" :roomName="roomName" />
       </div>
     </div>
   </v-app>
@@ -37,6 +37,7 @@ import Timer from './components/Timer';
 import {sortedWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 import vm from './main.js'
+import router from './router'
 
 
 var Ably = require('ably');
@@ -157,7 +158,7 @@ export default {
       justSkipped: false,
       numberOfWords: sortedWords.length,
       gameroomSetup: true,
-      roomName: 'default',
+      roomName: null,
     }
   },
   computed: {
@@ -196,6 +197,9 @@ export default {
         }
         ably.auth.createTokenRequest({clientId: you.name}, null, function() {});
         channel.presence.enterClient(you.name, you, function(){})
+        this.roomName = document.getElementById('roomBox').value
+        router.addRoutes([{name: this.roomName, path:'/'+this.roomName}])
+        router.push(this.roomName)
         this.gameStarted = true
 
       }
