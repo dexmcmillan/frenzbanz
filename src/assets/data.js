@@ -97,6 +97,8 @@ const christmas = [
   "Wrapping Paper"
 ]
 
+
+
 export const urlWords = []
 basic.forEach((word) => {
   if (word.length <= 10) {
@@ -104,6 +106,19 @@ basic.forEach((word) => {
   }
 })
 console.log(urlWords)
+
+export const aliasCombos = []
+// Since you only want pairs, there's no reason
+// to iterate over the last element directly
+for (let i = 0; i < basic.length - 1; i++) {
+  // This is where you'll capture that last value
+  for (let j = i + 1; j < basic.length; j++) {
+    const theCombo = `/${basic[i]}-${basic[j]}`
+    aliasCombos.push(theCombo.toLowerCase());
+  }
+}
+
+console.log(aliasCombos)
 
 export const sortedWords = basic.concat(general, celebrities, movies, christmas).sort(function() {
   return 0.5 - Math.random();

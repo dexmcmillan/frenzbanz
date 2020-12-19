@@ -50,7 +50,6 @@ if (regex === '') {
   const firstWord = words.splice(0,1)
   const secondWord = words.splice(1,1)
   roomName = firstWord + '-' + secondWord
-  router.addRoutes([{name: roomName, path:'/'+roomName}])
   router.push(roomName)
 }
 else {
@@ -60,9 +59,6 @@ else {
 const channel = ably.channels.get('signIn' + roomName);
 const wordChannel = ably.channels.get('words' + roomName);
 const scoreChannel = ably.channels.get('score' + roomName);
-
-console.log(channel)
-
 
 function getWord()  {
   const wordsLeft = sortedWords.sort(function() {
@@ -226,6 +222,7 @@ export default {
         ably.auth.createTokenRequest({clientId: you.name}, null, function() {});
         channel.presence.enterClient(you.name, you, function(){})
         this.gameStarted = true
+        this.$route
 
       }
       else {
