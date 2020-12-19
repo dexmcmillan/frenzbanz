@@ -1,14 +1,7 @@
 <template>
   <v-app class="w-screen h-screen">
-    <div class="absolute top-0 xs:p-5">
-      <h1 class="text-left lg:text-6xl text-3xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.3.0</span></h1>
-    </div>
-    <div class="text-left absolute bottom-4 left-4 invisible md:visible">
-      <a href="https://twitter.com/intent/tweet?text=Play%20Frenzbanz,%20buds!" target="_href"><v-icon class="mx-1 mb-5 ml-5">mdi-twitter</v-icon></a>
-      <a href="https://github.com/dexmcmillan/frenzbanz" target="_blank"><v-icon class="mx-1 mb-5">mdi-github</v-icon></a>
-    </div>
-    <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
-    <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
+
+    <div v-bind:class="{'fade': gameWon}" v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
       <div class="flex grid grid-cols-4 col-span-1 w-full xl:w-1/2 h-full self-center content-center gap-24 mx-auto">
         <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:assignedWord="player.assignedWord" v-bind:displayWord="player.displayWord" v-bind:playerName="player.name" v-bind:justScored="justScored" v-bind:justSkipped="justSkipped"></WordCard>
       </div>
@@ -17,6 +10,15 @@
     <div v-if="gameStarted === false" class="flex h-screen">
       <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
     </div>
+    <div v-bind:class="{'fade': gameWon}" class="absolute top-0 xs:p-5">
+      <h1 class="text-left lg:text-6xl text-3xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.3.0</span></h1>
+    </div>
+    <div v-bind:class="{'fade': gameWon}" class="text-left absolute bottom-4 left-4 invisible md:visible">
+      <a href="https://twitter.com/intent/tweet?text=Play%20Frenzbanz,%20buds!" target="_href"><v-icon class="mx-1 mb-5 ml-5">mdi-twitter</v-icon></a>
+      <a href="https://github.com/dexmcmillan/frenzbanz" target="_blank"><v-icon class="mx-1 mb-5">mdi-github</v-icon></a>
+    </div>
+    <WinnerBox v-if="gameWon" :winner="winner" v-on:resetGame="resetGame" />
+    <ScoreBoard v-bind:class="{'fade': gameWon}" v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
   </v-app>
 </template>
 
@@ -24,6 +26,7 @@
 import NewPlayerCard from './components/NewPlayerCard';
 import WordCard from './components/WordCard';
 import ScoreBoard from './components/ScoreBoard';
+import WinnerBox from './components/WinnerBox';
 import ButtonBar from './components/ButtonBar';
 import {sortedWords, urlWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
@@ -124,17 +127,30 @@ ably.connection.on('connected', function() {
   })
 
   scoreChannel.subscribe('updatescore', function(scoreInfo){
-    console.log(scoreInfo.data)
     const allPlayers = vm.$children[0].players
     allPlayers.forEach((player) => {
       if (player.code === scoreInfo.data.playerCode) {
         player.score = scoreInfo.data.newScore
       }
     })
+    if (scoreInfo.data.newScore === vm.$children[0].scoreToWin)  {
+      vm.$children[0].gameWon = true
+      console.log(vm.$children[0].winner)
+      vm.$children[0].winner = scoreInfo.data.playerName
+    }
+  })
+
+  scoreChannel.subscribe('resetscore', function(){
+    const allPlayers = vm.$children[0].players
+    vm.$children[0].gameWon = false
+    allPlayers.forEach((player) => {
+      player.score = 0;
+    })
+    vm.$children[0].yourInfo.assignedWord = getWord()
+    scoreChannel.publish('nextWordPlease', {playerCode: vm.$children[0].yourInfo.code, newWord: vm.$children[0].yourInfo.assignedWord})
   })
 
   scoreChannel.subscribe('nextWordPlease', function(newWordInfo){
-    console.log(newWordInfo.data)
     if (newWordInfo.data.playerCode !== vm.$children[0].yourInfo.code)  {
       const allPlayers = vm.$children[0].players
       allPlayers.forEach((player) => {
@@ -156,6 +172,7 @@ export default {
     WordCard,
     ScoreBoard,
     ButtonBar,
+    WinnerBox,
   },
   data() {
     return {
@@ -168,6 +185,8 @@ export default {
       justSkipped: false,
       numberOfWords: sortedWords.length,
       gameroomSetup: true,
+      gameWon: false,
+      winner: '',
     }
   },
   computed: {
@@ -226,14 +245,12 @@ export default {
       if (this.yourInfo.score < this.scoreToWin) {
         this.justScored = true
         this.yourInfo.score++
+        scoreChannel.publish('updatescore', {playerCode: this.yourInfo.code, playerName: this.yourInfo.name, newScore: this.yourInfo.score})
         setTimeout(() => {
           this.justScored = false;
           this.yourInfo.assignedWord = getWord()
-          scoreChannel.publish('updatescore', {playerCode: this.yourInfo.code, newScore: this.yourInfo.score})
           scoreChannel.publish('nextWordPlease', {playerCode: this.yourInfo.code, newWord: this.yourInfo.assignedWord})
         }, 2000);
-
-
       }
     },
     skip: function()  {
@@ -249,10 +266,17 @@ export default {
       this.yourInfo.score = 0;
       channel.presence.updateClient(this.yourInfo.name, this.yourInfo)
     },
+    resetGame: function() {
+      console.log(this.gameWon)
+      scoreChannel.publish('resetscore', {})
+    }
   }
 };
 
 </script>
 
 <style>
+.fade {
+  opacity: 0.5
+}
 </style>

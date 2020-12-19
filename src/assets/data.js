@@ -18,6 +18,16 @@ const basic = [
     "Envelope",
     "Merlot",
     "Lager",
+    "Pig",
+    "Drumstick",
+    "Guitar",
+    "Hairbrush",
+    "Joystick",
+    "Seagull",
+    "Mouse",
+    "Sailboat",
+    "Ferrari",
+    "Porsche"
 ]
 
 const general = [
@@ -53,6 +63,9 @@ const celebrities = [
   "Elon Musk",
   "Tom Hanks",
   "Donald Trump",
+  "Ariana Grande",
+  "Taylor Swift",
+  "Lady Gaga"
 ]
 
 const movies = [
