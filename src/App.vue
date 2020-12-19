@@ -17,17 +17,19 @@ import Game from './components/Game';
 import GameroomSetup from './components/GameroomSetup';
 import "tailwindcss/tailwind.css"
 // import vm from './main.js'
-import {sortedWords} from './assets/data.js';
 
 var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
 
-let roomID = sortedWords.slice(0,1).toString()
-console.log(roomID)
+const url = window.location.href
 
-export const channel = ably.channels.get('signIn' + roomID);
-export const wordChannel = ably.channels.get('words' + roomID);
-export const scoreChannel = ably.channels.get('score' + roomID);
+const regex = url.substr(url.lastIndexOf('/') + 1);
+console.log(regex)
+
+
+export const channel = ably.channels.get('signIn' + regex);
+export const wordChannel = ably.channels.get('words' + regex);
+export const scoreChannel = ably.channels.get('score' + regex);
 
 export default {
   name: 'App',
