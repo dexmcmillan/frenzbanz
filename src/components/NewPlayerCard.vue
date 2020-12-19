@@ -6,7 +6,6 @@
       <p>Only four players may join at once.</p>
       <div class="w-2/3 mx-auto sm:mt-32 md:mt-24">
         <v-text-field outlined id="nameBox" class="w-full text-xl" label="Name"></v-text-field>
-        <v-text-field outlined id="roomBox" class="w-full text-xl" label="Room ID"></v-text-field>
         <v-btn rounded class="w-full my-5" v-on:click="$emit('gameStart')">Join Game</v-btn>
       </div>
 
@@ -27,7 +26,6 @@ export default {
     gameStarted: Boolean,
     scoreToWin: Number,
     numberOfWords: Number,
-    roomName: String,
   },
   computed: {
     playerName: {

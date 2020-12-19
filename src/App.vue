@@ -23,7 +23,7 @@
         </div>
       </div>
       <div v-if="gameStarted === false" class="flex h-screen">
-        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" :roomName="roomName" />
+        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
       </div>
     </div>
   </v-app>
@@ -43,6 +43,7 @@ import router from './router'
 var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
 
+// This section handles routing to a random url if you don't currently have a room assigned via router.
 const url = window.location.href
 const regex = url.substr(url.lastIndexOf('/') + 1);
 console.log(regex)
@@ -52,7 +53,9 @@ if (regex === '') {
   const words = urlWords.sort(function() {
     return 0.5 - Math.random();
   })
-  roomName = words.slice(0,1).toString()
+  const firstWord = words.splice(0,1)
+  const secondWord = words.splice(1,1)
+  roomName = firstWord + '-' + secondWord
   router.addRoutes([{name: roomName, path:'/'+roomName}])
   router.push(roomName)
 }

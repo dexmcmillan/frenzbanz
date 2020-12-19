@@ -1,41 +1,44 @@
+const basic = [
+    'Bird',
+    'Plane',
+    'Whale',
+    "Pear",
+    "Pineapple",
+    "Cactus",
+    "Arizona",
+    "Broomstick",
+    "Halloween",
+    "Horse",
+    "Octopus",
+    "Kangaroo",
+    "Banana",
+    "Orangutan",
+    "Golf",
+    "Apple",
+    "Envelope",
+    "Merlot",
+    "Lager",
+]
+
 const general = [
-  'Bird',
-  'Plane',
-  'Whale',
   "Cold Case",
   "Magic Wand",
   "Harry Potter",
-  "Pear",
   "Hot Air Balloon",
   "France",
   "Ford",
-  "Westworld",
   "CBC News",
-  "Pineapple",
-  "Cactus",
-  "Arizona",
   "National Geographic",
   "T-Rex",
-  "Broomstick",
-  "Halloween",
   "Easter Bunny",
   "Tooth Fairy",
   "Ice Cream Truck",
-  "Octopus",
-  "Kangaroo",
   "COVID-19",
   "Christmas Tree",
   "Gingerbread",
   "Shortbread",
-  "Banana",
-  "Orangutan",
-  "Golf",
   "Amazon",
-  "Apple",
   "Youtube",
-  "Envelope",
-  "Merlot",
-  "Lager",
   "iPhone",
   "Corn Flakes",
   "Chocolate Milk",
@@ -66,7 +69,8 @@ const movies = [
   "Snow White and the Seven Dwarves",
   "Cinderella",
   "A Bug's Life",
-  "Monster's Inc."
+  "Monster's Inc.",
+  "Westworld",
 ]
 
 const christmas = [
@@ -80,13 +84,13 @@ const christmas = [
   "Wrapping Paper"
 ]
 
-export const urlWords = [
-  "orange",
-  "banana",
-  'horse',
-  'plane',
-  'yogurt'
-]
+export const urlWords = []
+basic.forEach((word) => {
+  if (word.length <= 10) {
+    urlWords.push(word.toLowerCase())
+  }
+})
+console.log(urlWords)
 
 export const sortedWords = general.concat(celebrities, movies, christmas).sort(function() {
   return 0.5 - Math.random();
