@@ -1,33 +1,21 @@
 <template>
-  <v-app>
-    <div class="w-screen h-screen">
-      <div class="absolute top-0 xs:p-5">
-        <h1 class="text-left lg:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.3.0</span></h1>
-
-        <!-- <div v-if="justSkipped === true" class="text-left md:text-xl sm:text-4xl m-8 w-screen">
-          <p><em>Skipped: {{ yourInfo.assignedWord }}</em></p>
-        </div> -->
+  <v-app class="w-screen h-screen">
+    <div class="absolute top-0 xs:p-5">
+      <h1 class="text-left lg:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.3.0</span></h1>
+    </div>
+    <div class="text-left absolute bottom-4 left-4">
+      <a href="https://twitter.com/intent/tweet?text=Play%20Frenzbanz,%20buds!" target="_href"><v-icon class="mx-1 mb-5 ml-5">mdi-twitter</v-icon></a>
+      <a href="https://github.com/dexmcmillan/frenzbanz" target="_href"><v-icon class="mx-1 mb-5">mdi-github</v-icon></a>
+    </div>
+    <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
+    <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
+      <div class="flex grid grid-cols-4 col-span-1 w-full xl:w-1/2 h-full self-center content-center gap-24 mx-auto">
+        <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:assignedWord="player.assignedWord" v-bind:displayWord="player.displayWord" v-bind:playerName="player.name" v-bind:justScored="justScored" v-bind:justSkipped="justSkipped"></WordCard>
       </div>
-      <div class="text-left absolute bottom-4 left-4">
-        <a href="https://twitter.com/intent/tweet?text=Play%20Frenzbanz,%20buds!" target="_href"><v-icon class="mx-1 mb-5 ml-5">mdi-twitter</v-icon></a>
-        <a href="https://github.com/dexmcmillan/frenzbanz" target="_href"><v-icon class="mx-1 mb-5">mdi-github</v-icon></a>
-      </div>
-      <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
-      <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
-
-        <div class="flex grid grid-cols-4 col-span-1 w-full xl:w-1/2 h-full self-center content-center gap-24 mx-auto">
-          <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:assignedWord="player.assignedWord" v-bind:displayWord="player.displayWord" v-bind:playerName="player.name" v-bind:justScored="justScored" v-bind:justSkipped="justSkipped"></WordCard>
-        </div>
-        <div class="absolute right-0 bottom-0 m-5">
-          <div class="text-center w-20 text-green-400" v-if="justScored === true">+1</div>
-
-          <ButtonBar v-on:guessCard="guessCard" v-on:skip="skip" v-on:reset="reset" v-on:leaveGame="leaveGame" class="m-2"></ButtonBar>
-
-        </div>
-      </div>
-      <div v-if="gameStarted === false" class="flex h-screen">
-        <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
-      </div>
+      <ButtonBar v-on:guessCard="guessCard" v-on:skip="skip" v-on:reset="reset" v-on:leaveGame="leaveGame" class="m-2"></ButtonBar>
+    </div>
+    <div v-if="gameStarted === false" class="flex h-screen">
+      <NewPlayerCard v-bind:gameStarted="gameStarted" v-on:gameStart="startGame" :scoreToWin="scoreToWin" :numberOfWords="numberOfWords" />
     </div>
   </v-app>
 </template>

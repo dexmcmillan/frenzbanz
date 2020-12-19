@@ -1,38 +1,38 @@
 <template>
-  <div>
+  <div class="absolute right-0 bottom-0 m-5">
     <v-tooltip top>
-      <template #activator="data">
-        <v-btn v-on="data.on" rounded class="m-2" v-on:click="$emit('guessCard')"><span class="text-lg">＋</span></v-btn>
+      <template v-slot:activator="{on, attrs}" >
+        <v-btn v-on="on" v-bind="attrs" rounded class="m-2" v-on:click="$emit('guessCard')"><span class="text-lg">＋</span></v-btn>
       </template>
       <span>Guessed it, next card</span>
     </v-tooltip>
     <v-tooltip top>
-      <template #activator="data">
-        <v-btn v-on="data.on" rounded class="m-2" v-on:click="$emit('skip')"><span class="text-lg">
-          <v-icon>mdi-debug-step-over</v-icon></span>
+      <template v-slot:activator="{on, attrs}" >
+        <v-btn v-on="on" v-bind="attrs" rounded class="m-2" v-on:click="$emit('skip')">
+          <span class="text-lg">
+            <v-icon>mdi-debug-step-over</v-icon>
+          </span>
         </v-btn>
       </template>
       <span>Too hard, skip card</span>
     </v-tooltip>
+    <v-btn v-on="on" v-bind="attrs" rounded v-on:click="this.startTimer" class="mx-2" v-bind:color="this.btnColor">
+        <span v-if="timerStart===true" class="text-xl">{{ timerCount }}</span>
+        <span v-else class="text-lg"><v-icon>mdi-timer-sand</v-icon></span>
+    </v-btn>
     <v-tooltip top>
-      <template #activator="hov">
-        <v-btn v-on="hov.on" rounded v-on:click="this.startTimer" class="mx-2 p-2" v-bind:color="this.btnColor">
-          <span v-if="timerStart===true" class="text-xl">{{ timerCount }}</span>
-          <span v-else class="text-lg"><v-icon>mdi-timer-sand</v-icon></span>
+      <template v-slot:activator="{on, attrs}" >
+        <v-btn v-on="on" v-bind="attrs" rounded class="m-2" v-on:click="$emit('reset')">
+          <span class="text-lg">
+            <v-icon>mdi-cached</v-icon>
+          </span>
         </v-btn>
       </template>
-      <span>Start timer</span>
+      <span>Reset score</span>
     </v-tooltip>
     <v-tooltip top>
-      <template #activator="data">
-      <v-btn v-on="data.on" rounded class="m-2" v-on:click="$emit('reset')"><span class="text-lg"><v-icon>mdi-cached</v-icon></span>
-      </v-btn>
-    </template>
-    <span>Reset score</span>
-  </v-tooltip>
-  <v-tooltip top>
-    <template #activator="data">
-      <v-btn v-on="data.on" rounded class="m-2" v-on:click="$emit('leaveGame')"><span class="text-lg"><v-icon>mdi-exit-to-app</v-icon></span></v-btn>
+      <template v-slot:activator="{on, attrs}" >
+        <v-btn v-on="on" v-bind="attrs" rounded class="m-2" v-on:click="$emit('leaveGame')"><span class="text-lg"><v-icon>mdi-exit-to-app</v-icon></span></v-btn>
       </template>
       <span>Leave game</span>
     </v-tooltip>

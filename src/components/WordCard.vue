@@ -3,8 +3,8 @@
       <p class="">{{ playerName }}</p>
       <h1 v-if="displayWord === assignedWord" class="text-center text-4xl">{{ assignedWord }}</h1>
       <h1 v-if="justScored === false && justSkipped === false && displayWord !== assignedWord" class="text-center text-4xl">{{ displayWord }}</h1>
-      <h1 v-else-if="justScored === true && displayWord !== assignedWord" class="text-center text-4xl text-green-400">Nailed it, bud!</h1>
-      <h1 v-else-if="justSkipped === true && displayWord !== assignedWord" class="text-center text-2xl text-gray-400">Ya skipped 'er! Word was {{ assignedWord }}.</h1>
+      <h1 v-else-if="justScored === true && displayWord !== assignedWord" class="text-center text-2xl text-green-400">Nailed it, bud! Your word was {{ assignedWord }}.</h1>
+      <h1 v-else-if="justSkipped === true && displayWord !== assignedWord" class="text-center text-2xl text-gray-400">Ya skipped 'er! The word was {{ assignedWord }}.</h1>
     </div>
 </template>
 
