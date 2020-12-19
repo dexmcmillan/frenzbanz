@@ -87,19 +87,19 @@ function getWord()  {
 function getCurrentPlayers()  {
   channel.presence.get(function(err, members) {
     members.forEach((player) => {
-      vm.$children[0].$children[0].$children[0].players.push(player.data)
+      vm.$children[0].players.push(player.data)
     })
   });
 }
 
 function updatePlayerData(member) {
-  const pos = vm.$children[0].$children[0].$children[0].players.map(function(e) { return e.name; }).indexOf(member.data.name);
-  vm.$children[0].$children[0].$children[0].players.splice(pos, 1, member.data)
+  const pos = vm.$children[0].players.map(function(e) { return e.name; }).indexOf(member.data.name);
+  vm.$children[0].players.splice(pos, 1, member.data)
 }
 
 function thisPlayer() {
   let yourFile = {}
-  vm.$children[0].$children[0].$children[0].players.forEach((player) => {
+  vm.$children[0].players.forEach((player) => {
     if (ably.connection.id === player.code) {
       yourFile = player
     }
@@ -110,16 +110,15 @@ function thisPlayer() {
 function removePlayer() {
   channel.presence.get(function(err, members) {
     const pos = members.indexOf(thisPlayer().code)
-    vm.$children[0].$children[0].$children[0].players.splice(pos)
-    vm.$children[0].$children[0].$children[0].players.push(members[pos].data)
+    vm.$children[0].players.splice(pos)
+    vm.$children[0].players.push(members[pos].data)
   });
 }
 
 ably.connection.on('connected', function() {
-  console.log(vm.$children[0].$children[0].$children[0])
+
   channel.presence.subscribe('enter', function(member) {
-    vm.$children[0].$children[0].$children[0].players.push(member.data)
-    console.log(vm.$children[0].$children[0].$children[0].players.length)
+    vm.$children[0].players.push(member.data)
   });
 
   channel.presence.subscribe('update', function(member) {
@@ -134,13 +133,13 @@ ably.connection.on('connected', function() {
   getCurrentPlayers();
 
   wordChannel.subscribe(function(wordChosen){
-    const pos = vm.$children[0].$children[0].$children[0].words.indexOf(wordChosen.data)
-    vm.$children[0].$children[0].$children[0].words.splice(pos,1)
+    const pos = vm.$children[0].words.indexOf(wordChosen.data)
+    vm.$children[0].words.splice(pos,1)
   })
 
   scoreChannel.subscribe('updatescore', function(scoreInfo){
     console.log(scoreInfo.data)
-    const allPlayers = vm.$children[0].$children[0].$children[0].players
+    const allPlayers = vm.$children[0].players
     allPlayers.forEach((player) => {
       if (player.code === scoreInfo.data.playerCode) {
         player.score = scoreInfo.data.newScore
@@ -150,8 +149,8 @@ ably.connection.on('connected', function() {
 
   scoreChannel.subscribe('nextWordPlease', function(newWordInfo){
     console.log(newWordInfo.data)
-    if (newWordInfo.data.playerCode !== vm.$children[0].$children[0].$children[0].yourInfo.code)  {
-      const allPlayers = vm.$children[0].$children[0].$children[0].players
+    if (newWordInfo.data.playerCode !== vm.$children[0].yourInfo.code)  {
+      const allPlayers = vm.$children[0].players
       allPlayers.forEach((player) => {
         if (player.code === newWordInfo.data.playerCode) {
           player.assignedWord = newWordInfo.data.newWord
@@ -160,7 +159,7 @@ ably.connection.on('connected', function() {
       })
     }
   })
-  console.log(vm.$children[0].$children[0].$children[0].roomName)
+  console.log(vm.$children[0].roomName)
   console.log("Connected!");
 });
 
@@ -183,7 +182,6 @@ export default {
       justSkipped: false,
       numberOfWords: sortedWords.length,
       gameroomSetup: true,
-      roomName: null,
     }
   },
   computed: {
@@ -206,12 +204,12 @@ export default {
   },
   methods: {
     startGame: function() {
-      // if(vm.$children[0].$children[0].$children[0].players.length !== 1) {
+      // if(vm.$children[0].players.length !== 1) {
       //   getCurrentPlayers();
       // }
 
       // Need to fix this bit so that the global players doesn't update the hidden word!
-      if(vm.$children[0].$children[0].$children[0].players.length < 4) {
+      if(this.players.length < 4) {
         const newWord = getWord()
         let you = {
           code: ably.connection.id,
