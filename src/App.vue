@@ -9,8 +9,8 @@
         </div> -->
       </div>
       <div class="text-left absolute bottom-4 left-4">
-        <a href="https://twitter.com/intent/tweet?text=Play%20Frenzbanz,%20buds!" target="_href"><v-icon class="mx-1">mdi-twitter</v-icon></a>
-        <a href="https://github.com/dexmcmillan/frenzbanz" target="_href"><v-icon class="mx-1">mdi-github</v-icon></a>
+        <a href="https://twitter.com/intent/tweet?text=Play%20Frenzbanz,%20buds!" target="_href"><v-icon class="mx-1 mb-5 ml-5">mdi-twitter</v-icon></a>
+        <a href="https://github.com/dexmcmillan/frenzbanz" target="_href"><v-icon class="mx-1 mb-5">mdi-github</v-icon></a>
       </div>
       <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
       <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
@@ -18,36 +18,11 @@
         <div class="flex grid grid-cols-4 col-span-1 w-full xl:w-1/2 h-full self-center content-center gap-24 mx-auto">
           <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:assignedWord="player.assignedWord" v-bind:displayWord="player.displayWord" v-bind:playerName="player.name" v-bind:justScored="justScored" v-bind:justSkipped="justSkipped"></WordCard>
         </div>
-        <div class="absolute right-0 bottom-0 m-10">
+        <div class="absolute right-0 bottom-0 m-5">
           <div class="text-center w-20 text-green-400" v-if="justScored === true">+1</div>
-          <v-tooltip top>
-            <template #activator="data">
-              <v-btn v-on="data.on" rounded class="m-2" v-on:click="guessCard"><span class="text-lg">＋</span></v-btn>
-            </template>
-            <span>Guessed it, next card</span>
-          </v-tooltip>
-          <v-tooltip top>
-            <template #activator="data">
-              <v-btn v-on="data.on" rounded class="m-2" v-on:click="skip"><span class="text-lg">
-                <v-icon>mdi-debug-step-over</v-icon></span>
-              </v-btn>
-            </template>
-            <span>Too hard, skip card</span>
-          </v-tooltip>
-          <Timer class="m-2"></Timer>
-          <v-tooltip top>
-            <template #activator="data">
-            <v-btn v-on="data.on" rounded class="m-2" v-on:click='reset'><span class="text-lg"><v-icon>mdi-cached</v-icon></span>
-            </v-btn>
-          </template>
-          <span>Reset score</span>
-        </v-tooltip>
-        <v-tooltip top>
-          <template #activator="data">
-            <v-btn v-on="data.on" rounded class="m-2" v-on:click='leaveGame'><span class="text-lg"><v-icon>mdi-exit-to-app</v-icon></span></v-btn>
-            </template>
-            <span>Leave game</span>
-          </v-tooltip>
+
+          <ButtonBar v-on:guessCard="guessCard" v-on:skip="skip" v-on:reset="reset" v-on:leaveGame="leaveGame" class="m-2"></ButtonBar>
+
         </div>
       </div>
       <div v-if="gameStarted === false" class="flex h-screen">
@@ -61,7 +36,7 @@
 import NewPlayerCard from './components/NewPlayerCard';
 import WordCard from './components/WordCard';
 import ScoreBoard from './components/ScoreBoard';
-import Timer from './components/Timer';
+import ButtonBar from './components/ButtonBar';
 import {sortedWords, urlWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 import vm from './main.js'
@@ -192,7 +167,7 @@ export default {
     NewPlayerCard,
     WordCard,
     ScoreBoard,
-    Timer,
+    ButtonBar,
   },
   data() {
     return {
