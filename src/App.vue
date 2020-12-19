@@ -20,11 +20,34 @@
         </div>
         <div class="absolute right-0 bottom-0 m-10">
           <div class="text-center w-20 text-green-400" v-if="justScored === true">+1</div>
-          <v-btn rounded class="m-2" v-on:click="guessCard"><span class="text-lg">＋</span></v-btn>
-          <v-btn rounded class="m-2" v-on:click="skip"><span class="text-lg"><v-icon>mdi-debug-step-over</v-icon></span></v-btn>
+          <v-tooltip top>
+            <template #activator="data">
+              <v-btn v-on="data.on" rounded class="m-2" v-on:click="guessCard"><span class="text-lg">＋</span></v-btn>
+            </template>
+            <span>Guessed it, next card</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template #activator="data">
+              <v-btn v-on="data.on" rounded class="m-2" v-on:click="skip"><span class="text-lg">
+                <v-icon>mdi-debug-step-over</v-icon></span>
+              </v-btn>
+            </template>
+            <span>Too hard, skip card</span>
+          </v-tooltip>
           <Timer class="m-2"></Timer>
-          <v-btn rounded class="m-2" v-on:click='reset'><span class="text-lg">Reset Score</span></v-btn>
-          <v-btn rounded class="m-2" v-on:click='leaveGame'><span class="text-lg">Leave Game</span></v-btn>
+          <v-tooltip top>
+            <template #activator="data">
+            <v-btn v-on="data.on" rounded class="m-2" v-on:click='reset'><span class="text-lg"><v-icon>mdi-cached</v-icon></span>
+            </v-btn>
+          </template>
+          <span>Reset score</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template #activator="data">
+            <v-btn v-on="data.on" rounded class="m-2" v-on:click='leaveGame'><span class="text-lg"><v-icon>mdi-exit-to-app</v-icon></span></v-btn>
+            </template>
+            <span>Leave game</span>
+          </v-tooltip>
         </div>
       </div>
       <div v-if="gameStarted === false" class="flex h-screen">
