@@ -92,6 +92,6 @@ basic.forEach((word) => {
 })
 console.log(urlWords)
 
-export const sortedWords = general.concat(celebrities, movies, christmas).sort(function() {
+export const sortedWords = basic.concat(general, celebrities, movies, christmas).sort(function() {
   return 0.5 - Math.random();
 })

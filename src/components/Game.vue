@@ -2,17 +2,22 @@
   <div class="w-screen h-screen">
     <div class="absolute top-0 xs:p-5">
       <h1 class="text-left lg:text-6xl sm:text-4xl m-8 w-screen">Frenz<span class="text-gray-400">banz</span> <span class="text-sm">v1.1.0</span></h1>
+      <div>
+        <p>Share it.</p>
+      </div>
       <!-- <div v-if="justSkipped === true" class="text-left md:text-xl sm:text-4xl m-8 w-screen">
         <p><em>Skipped: {{ yourInfo.assignedWord }}</em></p>
       </div> -->
     </div>
+
     <ScoreBoard v-bind:players="players" :scoreToWin="scoreToWin"></ScoreBoard>
     <div v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
-
       <div class="flex grid grid-cols-3 col-span-1 w-full md:w-1/3 h-full self-center content-center gap-24 mx-auto">
         <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:assignedWord="player.assignedWord" v-bind:displayWord="player.displayWord" v-bind:playerName="player.name" v-bind:justScored="justScored" v-bind:justSkipped="justSkipped"></WordCard>
       </div>
+
       <div class="absolute right-0 bottom-0 m-10">
+
         <div class="text-center w-20 text-green-400" v-if="justScored === true">+1</div>
         <v-btn rounded class="m-2" v-on:click="guessCard"><span class="text-lg">＋</span></v-btn>
         <v-btn rounded class="m-2" v-on:click="skip"><span class="text-lg">Skip</span></v-btn>
