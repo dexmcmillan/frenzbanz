@@ -80,6 +80,14 @@ const christmas = [
   "Wrapping Paper"
 ]
 
+export const urlWords = [
+  "orange",
+  "banana",
+  'horse',
+  'plane',
+  'yogurt'
+]
+
 export const sortedWords = general.concat(celebrities, movies, christmas).sort(function() {
   return 0.5 - Math.random();
 })

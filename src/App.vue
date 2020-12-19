@@ -34,7 +34,7 @@ import NewPlayerCard from './components/NewPlayerCard';
 import WordCard from './components/WordCard';
 import ScoreBoard from './components/ScoreBoard';
 import Timer from './components/Timer';
-import {sortedWords} from './assets/data.js';
+import {sortedWords, urlWords} from './assets/data.js';
 import "tailwindcss/tailwind.css"
 import vm from './main.js'
 import router from './router'
@@ -45,9 +45,26 @@ var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
 
 const url = window.location.href
 const regex = url.substr(url.lastIndexOf('/') + 1);
-const channel = ably.channels.get('signIn' + regex);
-const wordChannel = ably.channels.get('words' + regex);
-const scoreChannel = ably.channels.get('score' + regex);
+console.log(regex)
+let roomName = ''
+
+if (regex === '') {
+  const words = urlWords.sort(function() {
+    return 0.5 - Math.random();
+  })
+  roomName = words.slice(0,1).toString()
+  router.addRoutes([{name: roomName, path:'/'+roomName}])
+  router.push(roomName)
+}
+else {
+  roomName = regex
+}
+
+const channel = ably.channels.get('signIn' + roomName);
+const wordChannel = ably.channels.get('words' + roomName);
+const scoreChannel = ably.channels.get('score' + roomName);
+
+console.log(channel)
 
 
 function getWord()  {
@@ -197,9 +214,6 @@ export default {
         }
         ably.auth.createTokenRequest({clientId: you.name}, null, function() {});
         channel.presence.enterClient(you.name, you, function(){})
-        this.roomName = document.getElementById('roomBox').value
-        router.addRoutes([{name: this.roomName, path:'/'+this.roomName}])
-        router.push(this.roomName)
         this.gameStarted = true
 
       }
