@@ -33,17 +33,14 @@ import WordCard from './WordCard';
 import ScoreBoard from './ScoreBoard';
 import Timer from './Timer';
 import {sortedWords} from '../assets/data.js';
+import {channel, wordChannel, scoreChannel} from '../App';
 import "tailwindcss/tailwind.css"
 import vm from '../main.js'
 
 
-
-
 var Ably = require('ably');
 var ably = new Ably.Realtime('c6JXpw.bymHUw:LDNkGB5SDiMNVatx');
-const channel = ably.channels.get('signIn');
-const wordChannel = ably.channels.get('words');
-const scoreChannel = ably.channels.get('score');
+
 
 function getWord()  {
   const wordsLeft = sortedWords.sort(function() {
