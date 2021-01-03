@@ -1,7 +1,6 @@
 <template>
   <v-app class="w-screen h-screen">
-
-    <div v-bind:class="{'fade': gameWon}" v-if="gameStarted === true" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
+    <div v-bind:class="{'fade': gameWon}" v-if="gameStarted" class='grid grid-cols-1 w-screen h-screen p-5 mx-auto'>
       <div class="flex grid grid-cols-4 col-span-1 w-full xl:w-1/2 h-full self-center content-center gap-24 mx-auto">
         <WordCard v-for="player in allWordsButYours" v-bind:key="player.id" v-bind:assignedWord="player.assignedWord" v-bind:displayWord="player.displayWord" v-bind:playerName="player.name" v-bind:justScored="justScored" v-bind:justSkipped="justSkipped"></WordCard>
       </div>
@@ -220,7 +219,7 @@ export default {
           displayWord: newWord,
         }
         ably.auth.createTokenRequest({clientId: you.name}, null, function() {});
-        channel.presence.enterClient(you.name, you, function(){})
+        channel.presence.updateClient(you.name, you, function(){})
         this.gameStarted = true
         this.$route
 

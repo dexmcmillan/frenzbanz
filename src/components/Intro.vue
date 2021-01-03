@@ -1,5 +1,5 @@
 <template>
-    <div class="p-7 sm:mt-18 w-full md:w-2/3 lg:w-1/3 mx-auto my-auto">
+    <div class="p-7 xs:mt-18 w-full md:w-2/3 lg:w-1/3 mx-auto my-auto">
       <h3 class="text-4xl font-bold mb-3">Rules</h3>
       <p>Each player begins their turn by starting the timer. They may then ask each other player one question about their word, which is visible only to them. You may not ask "what is my word?" but can ask questions like "do I have a tail?" If you guess your word before the timer expires, increase your score and you'll be assigned a new card. You may continue in this way until the timer expires, then the next player takes their turn. Continue until the first player reaches <strong>{{ scoreToWin }}</strong>. They win the game.</p>
       <p>Play with up to three other friends at a time by sharing this link:</p>

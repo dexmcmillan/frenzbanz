@@ -1,33 +1,40 @@
 const basic = [
-    'Bird',
-    'Plane',
-    'Whale',
-    "Pear",
-    "Pineapple",
-    "Cactus",
-    "Arizona",
-    "Broomstick",
-    "Halloween",
-    "Horse",
-    "Octopus",
-    "Kangaroo",
-    "Banana",
-    "Orangutan",
-    "Golf",
-    "Apple",
-    "Envelope",
-    "Merlot",
-    "Lager",
-    "Pig",
-    "Drumstick",
-    "Guitar",
-    "Hairbrush",
-    "Joystick",
-    "Seagull",
-    "Mouse",
-    "Sailboat",
-    "Ferrari",
-    "Porsche"
+  'Bird',
+  'Plane',
+  'Whale',
+  "Pear",
+  "Pineapple",
+  "Cactus",
+  "Arizona",
+  "Broomstick",
+  "Halloween",
+  "Horse",
+  "Octopus",
+  "Kangaroo",
+  "Banana",
+  "Orangutan",
+  "Golf",
+  "Apple",
+  "Envelope",
+  "Merlot",
+  "Lager",
+  "Pig",
+  "Drumstick",
+  "Guitar",
+  "Hairbrush",
+  "Joystick",
+  "Seagull",
+  "Mouse",
+  "Sailboat",
+  "Mailman",
+  "Dumpster",
+  "Persimmon",
+  "Blackberry",
+  "Blueberry",
+  "Radar",
+  "Daisy",
+  "Tulip",
+  "Chimney",
 ]
 
 const general = [
@@ -38,21 +45,28 @@ const general = [
   "France",
   "Ford",
   "CBC News",
+  "Ferrari",
+  "Porsche",
   "National Geographic",
   "T-Rex",
   "Easter Bunny",
   "Tooth Fairy",
   "Ice Cream Truck",
   "COVID-19",
-  "Christmas Tree",
-  "Gingerbread",
-  "Shortbread",
   "Amazon",
   "Youtube",
   "iPhone",
   "Corn Flakes",
   "Chocolate Milk",
   "Air Force One",
+  "Black Hole",
+  "Milky Way",
+  "Twix",
+  "Willy Wonka",
+  "Hot Tub",
+  "Thor",
+  "Zeus",
+  "Hades",
 ]
 
 const celebrities = [
@@ -84,6 +98,11 @@ const movies = [
   "A Bug's Life",
   "Monster's Inc.",
   "Westworld",
+  "The X-Files",
+  "Fox Mulder",
+  "Dana Scully",
+  "Netflix",
+
 ]
 
 const christmas = [
@@ -94,7 +113,10 @@ const christmas = [
   "Snowflake",
   "Ornament",
   "Candy Cane",
-  "Wrapping Paper"
+  "Wrapping Paper",
+  "Christmas Tree",
+  "Gingerbread",
+  "Shortbread",
 ]
 
 
@@ -120,6 +142,6 @@ for (let i = 0; i < basic.length - 1; i++) {
 
 console.log(aliasCombos)
 
-export const sortedWords = basic.concat(general, celebrities, movies, christmas).sort(function() {
+export const sortedWords = basic.concat(general, celebrities, movies).sort(function() {
   return 0.5 - Math.random();
 })
