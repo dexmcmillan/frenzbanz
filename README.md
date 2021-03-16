@@ -1,6 +1,6 @@
 # Frenzbanz
 
-A game similar to Hedbanz made for video chat. A hosted version can be found [here](https://www.google.com).
+A game similar to Hedbanz made for video chat. A hosted version can be found [here](www.dextermcmillan.com/frenzbanz).
 
 Player-to-player communication implemented using [Ably](https://www.ably.io/). Front end with [Vuetify](https://vuetifyjs.com/en/) and [TailwindCSS](https://tailwindcss.com/).
 
